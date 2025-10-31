@@ -19,9 +19,9 @@ export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         {/* Hero Section */}
         <section className="relative w-full py-24 md:py-32 lg:py-40 bg-gradient-to-br from-gray-900 via-black to-blue-900/50">
            <div className="absolute inset-0 opacity-20">

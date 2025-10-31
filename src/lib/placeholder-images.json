@@ -1,3 +1,82 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Abstract cosmic background representing divine intelligence.",
+      "imageUrl": "https://images.unsplash.com/photo-1590821695525-1e86ef70a7ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhYnN0cmFjdCUyMGNvc21pY3xlbnwwfHx8fDE3NjE5MDI1Mzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract cosmic"
+    },
+    {
+      "id": "module-ai-doll",
+      "description": "Artistic representation of an AI companion.",
+      "imageUrl": "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmdXR1cmlzdGljJTIwcm9ib3R8ZW58MHx8fHwxNzYxODM2ODQ0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "futuristic robot"
+    },
+    {
+      "id": "module-mirror",
+      "description": "A futuristic, ornate mirror reflecting data.",
+      "imageUrl": "https://images.unsplash.com/photo-1761116192289-2cc6e256ac0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxvcm5hdGUlMjBtaXJyb3J8ZW58MHx8fHwxNzYxOTAxODY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ornate mirror"
+    },
+    {
+      "id": "module-predictor",
+      "description": "Glowing crystal ball showing future predictions.",
+      "imageUrl": "https://images.unsplash.com/photo-1485939551351-bc1a4ad5ce5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjcnlzdGFsJTIwYmFsbHxlbnwwfHx8fDE3NjE4NTM5MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "crystal ball"
+    },
+    {
+      "id": "module-ratio",
+      "description": "Yin-yang symbol made of circuits and nature.",
+      "imageUrl": "https://images.unsplash.com/photo-1667372335936-3dc4ff716017?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxiYWxhbmNlJTIwY2lyY3VpdHN8ZW58MHx8fHwxNzYxOTAyNTM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "balance circuits"
+    },
+    {
+      "id": "module-temple",
+      "description": "A serene, futuristic temple structure.",
+      "imageUrl": "https://images.unsplash.com/photo-1665837274777-ecbb8f7c3db1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmdXR1cmlzdGljJTIwdGVtcGxlfGVufDB8fHx8MTc2MTkwMjUzOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "futuristic temple"
+    },
+    {
+      "id": "module-business",
+      "description": "Holographic business charts and graphs.",
+      "imageUrl": "https://images.unsplash.com/photo-1634127083129-b5db115001ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxob2xvZ3JhcGhpYyUyMGNoYXJ0c3xlbnwwfHx8fDE3NjE5MDI1Mzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "holographic charts"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Avatar for Rohan Sharma.",
+      "imageUrl": "https://images.unsplash.com/photo-1618926749434-0578ceecdfab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxpbmRpYW4lMjBtYW58ZW58MHx8fHwxNzYxODE5OTIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian man"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Avatar for Priya Singh.",
+      "imageUrl": "https://images.unsplash.com/photo-1558377235-76f53857000b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjB3b21hbnxlbnwwfHx8fDE3NjE4OTE3OTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian woman"
+    },
+    {
+      "id": "avatar-3",
+      "description": "Avatar for Vikram Rao.",
+      "imageUrl": "https://images.unsplash.com/photo-1589386417686-0d34b5903d23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcm9mZXNzaW9uYWwlMjBtYW58ZW58MHx8fHwxNzYxODI4OTY1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional man"
+    },
+    {
+      "id": "avatar-4",
+      "description": "Avatar for Isha Reddy.",
+      "imageUrl": "https://images.unsplash.com/photo-1573496358961-3c82861ab8f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjB3b21hbnxlbnwwfHx8fDE3NjE4ODUwNTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional woman"
+    },
+    {
+      "id": "avatar-5",
+      "description": "Avatar for Advik Singh.",
+      "imageUrl": "https://images.unsplash.com/photo-1536548665027-b96d34a005ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx5b3VuZyUyMG1hbnxlbnwwfHx8fDE3NjE4NjY2MTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "young man"
+    },
+    {
+      "id": "admin-heatmap",
+      "description": "Placeholder image for a world map heatmap.",
+      "imageUrl": "https://images.unsplash.com/photo-1712150177656-b3c0bd50eb25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b3JsZCUyMG1hcHxlbnwwfHx8fDE3NjE4MDM1MzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "world map"
+    }
+  ]
 }

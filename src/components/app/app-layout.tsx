@@ -28,9 +28,10 @@ type AppLayoutProps = {
   navLinks: NavLink[];
   children: React.ReactNode;
   pageTitle: string;
+  hideHeader?: boolean;
 };
 
-export function AppLayout({ navLinks, children, pageTitle }: AppLayoutProps) {
+export function AppLayout({ navLinks, children, pageTitle, hideHeader = false }: AppLayoutProps) {
   return (
     <SidebarProvider>
       <Sidebar>
@@ -70,16 +71,18 @@ export function AppLayout({ navLinks, children, pageTitle }: AppLayoutProps) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
-          <SidebarTrigger className="md:hidden" />
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold md:text-2xl">{pageTitle}</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <UserNav />
-          </div>
-        </header>
-        <main className="flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/20">
+        {!hideHeader && (
+            <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
+            <SidebarTrigger className="md:hidden" />
+            <div className="flex-1">
+                <h1 className="text-lg font-semibold md:text-2xl">{pageTitle}</h1>
+            </div>
+            <div className="flex items-center gap-4">
+                <UserNav />
+            </div>
+            </header>
+        )}
+        <main className={`flex-1 flex-col ${!hideHeader ? 'gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/20' : ''}`}>
           {children}
         </main>
       </SidebarInset>

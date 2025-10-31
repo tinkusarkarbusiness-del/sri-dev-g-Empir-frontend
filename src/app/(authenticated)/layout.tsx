@@ -12,11 +12,26 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
         return "Module Details";
     }
     const currentLink = appNavLinks.find(link => pathname.startsWith(link.href));
-    return currentLink ? currentLink.label : 'Dashboard';
+    if (currentLink) {
+        // Special case for full-screen mirror page
+        if (currentLink.href === '/mirror') return '';
+        return currentLink.label;
+    }
+    return 'Dashboard';
+  }
+
+  const pageTitle = getPageTitle();
+
+  if (pathname.startsWith('/mirror')) {
+    return (
+         <AppLayout navLinks={appNavLinks} pageTitle={pageTitle} hideHeader>
+            {children}
+        </AppLayout>
+    )
   }
 
   return (
-    <AppLayout navLinks={appNavLinks} pageTitle={getPageTitle()}>
+    <AppLayout navLinks={appNavLinks} pageTitle={pageTitle}>
       {children}
     </AppLayout>
   );

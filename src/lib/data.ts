@@ -137,6 +137,11 @@ export const appNavLinks = [
     icon: LayoutDashboard,
   },
   {
+    href: '/mirror',
+    label: 'AI Mirror',
+    icon: Camera,
+  },
+  {
     href: '/wallet',
     label: 'Wallet',
     icon: Wallet,

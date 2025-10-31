@@ -31,10 +31,10 @@ export function SiteHeader() {
           {/* 🔱 Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-6 text-yellow-300 text-sm font-medium">
             <Link href="#features" className="hover:text-yellow-400 transition">Features</Link>
-            <Link href="#temple" className="hover:text-yellow-400 transition">Temple Mode</Link>
-            <Link href="#mirror" className="hover:text-yellow-400 transition">AI Mirror</Link>
-            <Link href="#prediction" className="hover:text-yellow-400 transition">Prediction</Link>
-            <Link href="#wallet" className="hover:text-yellow-400 transition">Wallet</Link>
+            <Link href="/login" className="hover:text-yellow-400 transition">Temple Mode</Link>
+            <Link href="/login" className="hover:text-yellow-400 transition">AI Mirror</Link>
+            <Link href="/login" className="hover:text-yellow-400 transition">Prediction</Link>
+            <Link href="/login" className="hover:text-yellow-400 transition">Wallet</Link>
           </nav>
 
           {/* ⚙️ Buttons */}

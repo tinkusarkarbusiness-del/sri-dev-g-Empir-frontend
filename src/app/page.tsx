@@ -12,8 +12,7 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { modules, testimonials, pricingTiers } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { AppLayout } from '@/components/app/app-layout';
-import { appNavLinks } from '@/lib/data';
+import HeroSection from '@/components/hero-section';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
@@ -21,38 +20,8 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <SiteHeader />
-      <main className="flex-1 pt-16">
-        {/* Hero Section */}
-        <section className="relative w-full py-24 md:py-32 lg:py-40 bg-gradient-to-br from-gray-900 via-black to-blue-900/50">
-           <div className="absolute inset-0 opacity-20">
-            {heroImage && (
-              <Image
-                src={heroImage.imageUrl}
-                alt={heroImage.description}
-                fill
-                className="object-cover"
-                data-ai-hint={heroImage.imageHint}
-                priority
-              />
-            )}
-          </div>
-          <div className="container mx-auto px-4 md:px-6 text-center relative">
-            <h1 className="font-headline text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-lg">
-              SriDev Empire
-            </h1>
-            <p className="mt-4 max-w-[700px] mx-auto text-lg text-gray-300 md:text-xl">
-              Your 6-in-1 spiritual and business toolkit, powered by divine AI.
-            </p>
-            <div className="mt-8 flex justify-center gap-4">
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg transform hover:scale-105 transition-transform">
-                <Link href="/signup">Join the Empire</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="font-bold border-primary text-primary hover:bg-primary/10 hover:text-primary shadow-lg transform hover:scale-105 transition-transform">
-                <Link href="#features">Explore Modules</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+      <main className="flex-1">
+        <HeroSection />
 
         {/* Features Section */}
         <section id="features" className="w-full py-16 md:py-24 lg:py-32 bg-background">

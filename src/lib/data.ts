@@ -2,13 +2,13 @@ import {
   Briefcase,
   BrainCircuit,
   Camera,
-  HeartHand,
+  Church,
+  Heart,
   LayoutDashboard,
   Map,
   Send,
   Shield,
   Shapes,
-  Temple,
   ToyBrick,
   Users,
   Wallet,
@@ -52,7 +52,7 @@ export const modules = [
     title: 'Digital Temple',
     shortDescription: 'A sanctuary for your soul.',
     fullDescription: 'Access a sacred digital space for meditation, rituals, and connecting with a higher power, available anytime, anywhere.',
-    icon: Temple,
+    icon: Church,
     imageId: 'module-temple',
   },
   {
@@ -144,7 +144,7 @@ export const appNavLinks = [
   {
     href: '#',
     label: 'Blessings',
-    icon: HeartHand,
+    icon: Heart,
   },
 ];
 

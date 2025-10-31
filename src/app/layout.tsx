@@ -3,9 +3,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
-import { usePathname } from 'next/navigation';
-import { AppLayout } from '@/components/app/app-layout';
-import { appNavLinks } from '@/lib/data';
 
 // This is a workaround to prevent build errors.
 // export const metadata: Metadata = {

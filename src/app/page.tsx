@@ -12,6 +12,8 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { modules, testimonials, pricingTiers } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { AppLayout } from '@/components/app/app-layout';
+import { appNavLinks } from '@/lib/data';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');

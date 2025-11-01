@@ -15,6 +15,7 @@ import {
   initiateEmailSignUp,
 } from '@/firebase/non-blocking-login';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SatpudaLogin() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,7 @@ export default function SatpudaLogin() {
   const { auth, firestore } = useFirebase();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (user && !isUserLoading) {
@@ -231,31 +233,59 @@ export default function SatpudaLogin() {
       );
     } catch (err) {
       console.error(err);
-      alert('Google sign-in failed');
+      toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Google sign-in failed",
+        });
     } finally {
       setLoading(false);
     }
   };
 
   const handleSignUp = async () => {
+    if (!email || !password) {
+        toast({
+            variant: "destructive",
+            title: "Missing fields",
+            description: "Please enter both email and password.",
+        });
+        return;
+    }
     try {
       setLoading(true);
       initiateEmailSignUp(auth, email, password);
     } catch (err) {
       console.error(err);
-      alert('Sign up failed: ' + (err as Error).message);
+      toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Sign up failed: " + (err as Error).message,
+        });
     } finally {
         setLoading(false);
     }
   };
 
   const handleLogin = async () => {
+     if (!email || !password) {
+        toast({
+            variant: "destructive",
+            title: "Missing fields",
+            description: "Please enter both email and password.",
+        });
+        return;
+    }
     try {
       setLoading(true);
       initiateEmailSignIn(auth, email, password);
     } catch (err) {
       console.error(err);
-      alert('Login failed');
+      toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Login failed",
+        });
     } finally {
         setLoading(false);
     }

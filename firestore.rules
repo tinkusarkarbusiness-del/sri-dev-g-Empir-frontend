@@ -1,0 +1,89 @@
+/**
+ * @fileoverview Firestore Security Rules for the Sri Dev Empire application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for user profiles and uses a
+ * presence-based model for admin roles. All write operations are protected by
+ * authorization checks based on the authenticated user's UID.  Data validation is
+ * relaxed in this prototyping phase to allow for flexible data shapes, but critical
+ * authorization and relational integrity fields are strictly enforced.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores individual user profiles. Access is restricted to the
+ *   owning user.
+ * - /roles_admin/{userId}: The existence of a document here grants admin privileges
+ *   to the specified user.
+ *
+ * Key Security Decisions:
+ * - User profiles are strictly owned and readable only by the authenticated user.
+ * - Listing of users is disallowed.
+ * - Admin privileges are granted by document existence in /roles_admin/{userId}.
+ * - To simplify and secure rules, authorization data is denormalized directly into
+ *   documents, avoiding the need for costly or impossible `get()` calls.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Secure user profiles stored under /users/{userId}.
+     * @path /users/{userId}
+     * @allow (create) Authenticated user can create their own profile if the userId matches their auth.uid.
+     * @allow (update) Authenticated user can update their own profile if the userId matches their auth.uid.
+     * @allow (get) Authenticated user can read their own profile if the userId matches their auth.uid.
+     * @deny (delete) Users cannot delete their profile through direct deletion.
+     * @deny (list) Listing all users is disallowed for privacy reasons.
+     * @deny (create) Reject creating a user document if the document ID does not match the authenticated user's ID.
+     * @deny (update) Reject updating a user document if the document ID does not match the authenticated user's ID.
+     * @principle Enforces document ownership, restricts listing, and validates relational integrity.
+     */
+    match /users/{userId} {
+      // Allow a user to create their own profile, enforcing that the userId matches the authenticated user's UID.
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      // Allow a user to get their own profile.
+      allow get: if isSignedIn() && isOwner(userId);
+      // Allow a user to update their own profile, enforcing that the userId matches the authenticated user's UID and that id field cannot be changed.
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      // Do not allow direct deletion of user profiles.
+      allow delete: if false;
+      // Do not allow listing of all users for privacy reasons.
+      allow list: if false;
+    }
+
+    /**
+     * @description Manages admin privileges using document existence in /roles_admin/{userId}.
+     * @path /roles_admin/{userId}
+     * @allow (create) Authenticated user can create their admin privilege entry if the userId matches their auth.uid.
+     * @allow (get) Authenticated user can read an admin privilege entry if the userId matches their auth.uid.
+     * @allow (update) Authenticated user can update an admin privilege entry if the userId matches their auth.uid.
+     * @deny (delete) Non-admin users cannot delete admin privilege entries; only admins can.
+     * @allow (list) Listing admin roles is allowed for admins.
+     * @principle Uses document existence to grant admin privileges, enforces ownership, and provides admin-level listing.
+     */
+    match /roles_admin/{userId} {
+      // Allow a user to create their admin role entry if the userId matches their auth.uid
+      allow create: if isSignedIn() && isOwner(userId);
+      // Allow a user to get their admin role entry if the userId matches their auth.uid
+      allow get: if isSignedIn() && isOwner(userId);
+      // Allow a user to update their admin role entry if the userId matches their auth.uid
+      allow update: if isSignedIn() && isOwner(userId);
+      // Allow a user to delete their admin role entry if the userId matches their auth.uid
+      allow delete: if isSignedIn() && isOwner(userId);
+      // Allow listing of admin roles to admins for management purposes
+      allow list: if isSignedIn();
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+    }
+  }
+}

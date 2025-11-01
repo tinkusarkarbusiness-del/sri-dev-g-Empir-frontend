@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user within the Sri Dev Empire application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The name the user has chosen to display."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "createdAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. Path-based ownership ensures only the user can access their data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "admin",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Indicates admin privileges for a user. The existence of a document grants admin access. Access is controlled by the `request.auth.uid`.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user with admin privileges."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the Sri Dev Empire application, focusing on user data, admin roles, and application modules, while adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling. This design prioritizes security, scalability, and debuggability. Crucially, authorization data (e.g., roles, membership) is denormalized into the documents themselves to avoid costly and insecure `get()` calls in security rules.&#x20;This ensures that authorization checks are atomic and efficient.\n\n1.  **Users:** User profiles are stored in `/users/{userId}`. This path-based ownership is the standard for private user data.\n\n2.  **Admin Roles:** Admin roles are managed through the `/roles_admin/{userId}` collection. The *existence* of a document in this collection grants admin privileges. This is more robust and scalable than embedding roles within the user document.\n\nThis structure is designed to ensure Authorization Independence. For example, if Module access depends on user roles or group memberships, those roles/memberships MUST be denormalized into each module document. This eliminates the need for `get()` calls in security rules, which can break atomic operations (transactions/batches).\n\nTo support the required QAPs (Rules are not Filters): The structure segregates data based on access needs and uses membership maps for collaborative data. Private user data is stored under `/users/{userId}`, ensuring only the user can access it. Admin roles are stored in `/roles_admin/{userId}`, allowing for secure `list` operations based on role existence."
+  }
+}

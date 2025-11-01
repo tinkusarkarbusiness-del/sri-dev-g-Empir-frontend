@@ -218,7 +218,7 @@ export default function SatpudaLogin() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const u = result.user;
-      const userDocRef = doc(db, 'users', u.uid);
+      const userDocRef = doc(firestore, 'users', u.uid);
       setDocumentNonBlocking(
         userDocRef,
         {

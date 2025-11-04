@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from 'react';
@@ -37,7 +38,13 @@ export function ActionModal({ scenario }: ActionModalProps) {
         currentContext: "Evening, relaxed at home.",
         scenario: scenario,
       });
-      setSuggestions(result.suggestions);
+      // The output from the LLM is a JSON string within the 'suggestions' property, so we need to parse it.
+      if (result.suggestions) {
+        // It might be a stringified array, so we parse it.
+        // And sometimes it comes with ```json markdown, so we remove it.
+        const suggestionsArray = JSON.parse(result.suggestions.replace(/```json\n|\n```/g, ''));
+        setSuggestions(suggestionsArray);
+      }
     } catch (e) {
       setError("Failed to generate suggestions. Please try again.");
       console.error(e);

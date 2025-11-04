@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -26,8 +27,8 @@ export type GenerateSuggestedActionsInput = z.infer<
 
 const GenerateSuggestedActionsOutputSchema = z.object({
   suggestions: z
-    .array(z.string())
-    .describe('An array of suggested actions (meditation, song, blessing).'),
+    .string()
+    .describe('An array of suggested actions (meditation, song, blessing) as a JSON string.'),
 });
 export type GenerateSuggestedActionsOutput = z.infer<
   typeof GenerateSuggestedActionsOutputSchema
@@ -46,9 +47,14 @@ const prompt = ai.definePrompt({
   prompt: `Based on the user profile: {{{userProfile}}}, current context: {{{currentContext}}}, and scenario: {{{scenario}}},
   suggest three relevant actions from the options: meditation, song, and blessing.
   Return them as a JSON array of strings.
+  Your entire response should be a JSON object with a single key "suggestions" which contains a JSON string array.
   Do not include any explanation or other text.
   The user wants to quickly engage with these activities.
-  Example: ["meditation", "song", "blessing"]`,
+  Example response:
+  {
+    "suggestions": "[\"meditation\", \"song\", \"blessing\"]"
+  }
+  `,
 });
 
 const generateSuggestedActionsFlow = ai.defineFlow(

@@ -84,4 +84,18 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  .animated-gradient {
+    background: radial-gradient(circle at 30% 30%, #2b0044, #000);
+    background-size: 200% 200%;
+    animation: gradientMove 15s infinite alternate;
+  }
+
+  @keyframes gradientMove {
+    from {
+      background-position: 0% 0%;
+    }
+    to {
+      background-position: 100% 100%;
+    }
+  }
 }

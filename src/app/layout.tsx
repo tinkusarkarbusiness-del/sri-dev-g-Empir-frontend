@@ -4,12 +4,26 @@ import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase';
+import { Poppins, Space_Grotesk as SpaceGrotesk } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 // This is a workaround to prevent build errors.
 // export const metadata: Metadata = {
 //   title: 'SriDev Empire',
 //   description: 'The visual UI blueprint for SriDev Empire.',
 // };
+
+const fontPoppins = Poppins({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-headline',
+});
+
+const fontSpaceGrotesk = SpaceGrotesk({
+  subsets: ['latin'],
+  variable: '--font-body',
+});
+
 
 export default function RootLayout({
   children,
@@ -20,11 +34,8 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <title>SriDev Empire</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased">
+      <body className={cn("font-body antialiased", fontPoppins.variable, fontSpaceGrotesk.variable)}>
           <FirebaseClientProvider>
             {children}
           </FirebaseClientProvider>

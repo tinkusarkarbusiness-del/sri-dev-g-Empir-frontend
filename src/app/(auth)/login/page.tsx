@@ -9,8 +9,7 @@ import {
 } from 'firebase/auth';
 import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useFirebase } from '@/firebase/provider';
-import { useUser } from '@/firebase/auth/use-user';
+import { useFirebase, useUser } from '@/firebase';
 import {
   initiateEmailSignIn,
   initiateEmailSignUp,
@@ -417,3 +416,5 @@ export default function SatpudaLogin() {
     </div>
   );
 }
+
+    

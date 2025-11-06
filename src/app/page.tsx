@@ -7,9 +7,6 @@ import {
   ArrowRight,
   CheckCircle,
   Star,
-  Gauge,
-  Cpu,
-  TrendingUp,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -70,46 +67,6 @@ export default function Home() {
               })}
             </div>
           </div>
-        </motion.section>
-
-        {/* Smart Dashboard Widgets */}
-        <motion.section
-          className="w-full py-16"
-          initial={{opacity:0,y:20}} 
-          animate={{opacity:1,y:0}} 
-          transition={{duration:0.5, delay: 0.4}}
-        >
-           <div className="container mx-auto px-4 md:px-6">
-             <div className="grid grid-cols-1 gap-6 md:grid-cols-3 max-w-4xl mx-auto">
-                <Card className="bg-white/5 backdrop-blur-sm border-primary/20">
-                  <CardContent className="p-4 flex items-center gap-4">
-                      <Gauge className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-bold text-lg">Daily Energy Index 🔮</p>
-                        <p className="text-2xl font-bold text-yellow-300">92%</p>
-                      </div>
-                  </CardContent>
-                </Card>
-                 <Card className="bg-white/5 backdrop-blur-sm border-primary/20">
-                  <CardContent className="p-4 flex items-center gap-4">
-                      <Cpu className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-bold text-lg">AI Server Load ⚙️</p>
-                        <p className="text-2xl font-bold text-yellow-300">14%</p>
-                      </div>
-                  </CardContent>
-                </Card>
-                 <Card className="bg-white/5 backdrop-blur-sm border-primary/20">
-                  <CardContent className="p-4 flex items-center gap-4">
-                      <TrendingUp className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-bold text-lg">Empire Growth 📈</p>
-                        <p className="text-2xl font-bold text-yellow-300">+4.6%</p>
-                      </div>
-                  </CardContent>
-                </Card>
-             </div>
-           </div>
         </motion.section>
 
         {/* Pricing Section */}

@@ -9,7 +9,8 @@ import {
 } from 'firebase/auth';
 import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useFirebase, useUser } from '@/firebase';
+import { useFirebase } from '@/firebase/provider';
+import { useUser } from '@/firebase/auth/use-user';
 import {
   initiateEmailSignIn,
   initiateEmailSignUp,

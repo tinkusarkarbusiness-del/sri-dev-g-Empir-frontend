@@ -398,7 +398,7 @@ export default function SatpudaLogin() {
         </motion.div>
 
         <div className="mt-6 text-right text-xs text-white/50">
-          Sri Dev G™ • Powered by Firebase Studio
+          Sri Dev G Empire™ • Powered by Sri Dev G™
         </div>
       </div>
 

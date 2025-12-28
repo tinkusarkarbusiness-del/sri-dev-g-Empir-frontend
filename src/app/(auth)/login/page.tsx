@@ -221,6 +221,19 @@ export default function SatpudaLogin() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const u = result.user;
+
+      // 🔥 GET FIREBASE ID TOKEN
+const token = await u.getIdToken();
+
+// 🔥 SEND TOKEN TO SERVER TO SET COOKIE
+await fetch('/api/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ token }),
+});
+
       const userDocRef = doc(firestore, 'users', u.uid);
       setDocumentNonBlocking(
         userDocRef,

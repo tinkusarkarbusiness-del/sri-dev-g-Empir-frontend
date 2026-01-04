@@ -1,4 +1,4 @@
-# **App Name**: SriDev Empire
+# **App Name**: Sri Dev G Empire
 
 ## Core Features:
 

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
 import { adminNavLinks } from "@/lib/data";
 
-const OWNER_EMAIL = "tinkusarkar.basiness@email.com"; // 🔴 yahan apna real email daalo
+const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
 
 export default function AdminLayout({
   children,
@@ -14,17 +14,21 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const role = localStorage.getItem("role");
     const email = localStorage.getItem("email");
 
-    // 🔐 DOUBLE SECURITY CHECK
-    if (role !== "admin" || email !== OWNER_EMAIL) {
-      localStorage.clear(); // optional but recommended
+    if (role === "admin" && email === OWNER_EMAIL) {
+      setChecked(true); // ✅ allow render
+    } else {
+      localStorage.clear();
       router.replace("/login");
     }
   }, [router]);
+
+  if (!checked) return null; // ⛔ white screen crash STOP
 
   const getPageTitle = () => {
     const currentLink = adminNavLinks.find((link) =>

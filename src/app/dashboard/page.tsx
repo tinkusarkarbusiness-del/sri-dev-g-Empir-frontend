@@ -1,9 +1,9 @@
 "use client";
 
-export default function DashboardPage() {
+export default function UserDashboard() {
   return (
-    <div style={{ padding: 24 }}>
-      <h1>User Dashboard</h1>
+    <div className="p-6">
+      <h1 className="text-xl font-bold">User Dashboard</h1>
       <p>Login successful. Dashboard loaded.</p>
     </div>
   );

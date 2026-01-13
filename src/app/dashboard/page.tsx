@@ -1,48 +1,43 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import { doc, getDoc } from "firebase/firestore"
 import { auth } from "@/lib/auth"
 import { db } from "@/firebase/config"
-import { doc, getDoc, setDoc } from "firebase/firestore"
 
 export default function DashboardPage() {
   const [userData, setUserData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const user = auth.currentUser
-    if (!user) return
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setLoading(false)
+        return
+      }
 
-    const loadUser = async () => {
       const ref = doc(db, "users", user.uid)
       const snap = await getDoc(ref)
 
-      if (!snap.exists()) {
-        await setDoc(ref, {
-          name: user.displayName ?? "User",
-          email: user.email,
-          role: "user",
-          walletBalance: 0,
-          createdAt: new Date()
-        })
-        setUserData({
-          name: user.displayName,
-          email: user.email,
-          walletBalance: 0
-        })
-      } else {
+      if (snap.exists()) {
         setUserData(snap.data())
       }
-    }
 
-    loadUser()
+      setLoading(false)
+    })
+
+    return () => unsub()
   }, [])
 
-  if (!userData) return <p>Loading...</p>
+  if (loading) return <p>Loading...</p>
+  if (!userData) return <p>No Firestore data found</p>
 
   return (
-    <div>
-      <h2>Welcome, {userData.name}</h2>
-      <p>Wallet Balance: ₹{userData.walletBalance}</p>
+    <div className="space-y-2">
+      <h1 className="text-xl font-bold">Welcome, {userData.name}</h1>
+      <p>Email: {userData.email}</p>
+      <p>Role: {userData.role}</p>
     </div>
   )
 }

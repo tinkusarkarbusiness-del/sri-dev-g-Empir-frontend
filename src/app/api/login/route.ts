@@ -1,37 +1,24 @@
-import { NextResponse } from "next/server";
-import { getAuth } from "firebase-admin/auth";
-import { firebaseAdminApp } from "../../../firebase/adminConfig";
-import { cookies } from "next/headers";
+// login-success.ts (example)
 
-export async function POST(req: Request) {
-  try {
-    const { token } = await req.json();
+import { useRouter } from "next/navigation";
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "No token provided" },
-        { status: 400 }
-      );
-    }
+const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
 
-    // Verify Firebase ID token
-    await getAuth(firebaseAdminApp).verifyIdToken(token);
+export function handleLoginSuccess(user: any) {
+  const router = useRouter();
 
-    // Set secure HTTP-only cookie
-    cookies().set("__session", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 5, // 5 days
-    });
+  const email = user.email;
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "Invalid token" },
-      { status: 401 }
-    );
+  // OWNER CHECK
+  if (email === OWNER_EMAIL) {
+    localStorage.setItem("role", "admin");
+    localStorage.setItem("email", email);
+
+    router.replace("/admin/dashboard"); // 🔥 CONTROL ROOM
+  } else {
+    localStorage.setItem("role", "user");
+    localStorage.setItem("email", email);
+
+    router.replace("/dashboard"); // 👤 USER DASHBOARD
   }
 }

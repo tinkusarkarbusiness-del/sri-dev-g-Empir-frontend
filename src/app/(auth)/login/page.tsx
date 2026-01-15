@@ -17,6 +17,7 @@ import {
 } from '@/firebase/non-blocking-login';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
+const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
 
 export default function SatpudaLogin() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -29,12 +30,6 @@ export default function SatpudaLogin() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (user && !isUserLoading) {
-      router.push('/dashboard');
-    }
-  }, [user, isUserLoading, router]);
 
   // Three.js globe
   useEffect(() => {
@@ -233,6 +228,18 @@ await fetch('/api/login', {
   },
   body: JSON.stringify({ token }),
 });
+
+      const isOwner = u.email === OWNER_EMAIL;
+
+if (isOwner) {
+  localStorage.setItem("role", "admin");
+  localStorage.setItem("email", u.email || "");
+  router.replace("/admin/dashboard");
+} else {
+  localStorage.setItem("role", "user");
+  localStorage.setItem("email", u.email || "");
+  router.replace("/dashboard");
+}
 
       const userDocRef = doc(firestore, 'users', u.uid);
       setDocumentNonBlocking(

@@ -1,37 +1,44 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
-import { firebaseAdminApp } from "../../../firebase/adminConfig";
+import { firebaseAdminApp } from "@/firebase/adminConfig";
 import { cookies } from "next/headers";
+
+const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
 
 export async function POST(req: Request) {
   try {
     const { token } = await req.json();
 
     if (!token) {
-      return NextResponse.json(
-        { error: "No token provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No token" }, { status: 400 });
     }
 
-    // Verify Firebase ID token
-    await getAuth(firebaseAdminApp).verifyIdToken(token);
+    // 🔐 Firebase token verify
+    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
 
-    // Set secure HTTP-only cookie
-    cookies().set("__session", token, {
+    // 🧠 ROLE DECISION (SERVER SIDE)
+    const role = decoded.email === OWNER_EMAIL ? "admin" : "user";
+
+    const cookieStore = cookies();
+
+    // 🔐 Auth token (httpOnly = secure)
+    cookieStore.set("__session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 5, // 5 days
+      maxAge: 60 * 60 * 24 * 5,
     });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "Invalid token" },
-      { status: 401 }
-    );
+    // 🧠 Role cookie (middleware read karega)
+    cookieStore.set("role", role, {
+      httpOnly: false,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 5,
+    });
+
+    return NextResponse.json({ success: true, role });
+  } catch (err) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }

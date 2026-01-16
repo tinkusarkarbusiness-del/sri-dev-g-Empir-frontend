@@ -1,33 +1,28 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getAuth } from "firebase-admin/auth";
-import { firebaseAdminApp } from "@/firebase/adminConfig";
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const token = req.cookies.get("__session")?.value;
+  const role = req.cookies.get("role")?.value;
 
-  // 🔒 login hi nahi
-  if (!token) {
+  const { pathname } = req.nextUrl;
+
+  // ❌ Not logged in
+  if (
+    !token &&
+    (pathname.startsWith("/dashboard") || pathname.startsWith("/admin"))
+  ) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  try {
-    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
-
-    // 🔥 ADMIN ROLE CHECK
-    if (
-      req.nextUrl.pathname.startsWith("/admin") &&
-      decoded.role !== "admin"
-    ) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-
-    return NextResponse.next();
-  } catch (err) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  // ❌ User trying admin area
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/admin/:path*"],
 };

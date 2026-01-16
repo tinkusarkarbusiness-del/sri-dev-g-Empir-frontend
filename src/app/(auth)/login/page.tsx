@@ -229,15 +229,16 @@ await fetch('/api/login', {
   body: JSON.stringify({ token }),
 });
 
-      const isOwner = u.email === OWNER_EMAIL;
+ if (!res.ok) {
+  throw new Error("Login failed");
+}
 
-if (isOwner) {
-  localStorage.setItem("role", "admin");
-  localStorage.setItem("email", u.email || "");
+const data = await res.json();
+
+// 🔥 ROLE BASED REDIRECT (SERVER DECISION)
+if (data.role === "admin") {
   router.replace("/admin/dashboard");
 } else {
-  localStorage.setItem("role", "user");
-  localStorage.setItem("email", u.email || "");
   router.replace("/dashboard");
 }
 

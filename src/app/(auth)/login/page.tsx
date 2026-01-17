@@ -210,60 +210,60 @@ export default function SatpudaLogin() {
   }, []);
 
   // Auth handlers
-  const handleGoogle = async () => {
-    try {
-      setLoading(true);
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const u = result.user;
+const handleGoogle = async () => {
+  try {
+    setLoading(true);
 
-      // 🔥 GET FIREBASE ID TOKEN
-const token = await u.getIdToken();
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const u = result.user;
 
-// 🔥 SEND TOKEN TO SERVER TO SET COOKIE
-await fetch('/api/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ token }),
-});
+    const token = await u.getIdToken();
 
- if (!res.ok) {
-  throw new Error("Login failed");
-}
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
 
-const data = await res.json();
-
-// 🔥 ROLE BASED REDIRECT (SERVER DECISION)
-if (data.role === "admin") {
-  router.replace("/admin/dashboard");
-} else {
-  router.replace("/dashboard");
-}
-
-      const userDocRef = doc(firestore, 'users', u.uid);
-      setDocumentNonBlocking(
-        userDocRef,
-        {
-          uid: u.uid,
-          email: u.email,
-          displayName: u.displayName,
-          createdAt: new Date(),
-        },
-        { merge: true }
-      );
-    } catch (err) {
-      console.error(err);
-      toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Google sign-in failed",
-        });
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error("Login failed");
     }
-  };
+
+    const data = await res.json();
+
+    if (data.role === "admin") {
+      router.replace("/admin/dashboard");
+    } else {
+      router.replace("/dashboard");
+    }
+
+    const userDocRef = doc(firestore, 'users', u.uid);
+    setDocumentNonBlocking(
+      userDocRef,
+      {
+        uid: u.uid,
+        email: u.email,
+        displayName: u.displayName,
+        createdAt: new Date(),
+      },
+      { merge: true }
+    );
+
+  } catch (err) {
+    console.error(err);
+    toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+      description: "Google sign-in failed",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleSignUp = async () => {
     if (!email || !password) {

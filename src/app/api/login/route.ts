@@ -3,7 +3,7 @@ import { getAuth } from "firebase-admin/auth";
 import { firebaseAdminApp } from "@/firebase/adminConfig";
 import { cookies } from "next/headers";
 
-const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
+const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export async function POST(req: Request) {
   try {

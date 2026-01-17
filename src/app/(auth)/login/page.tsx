@@ -17,7 +17,7 @@ import {
 } from '@/firebase/non-blocking-login';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
-const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
+const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export default function SatpudaLogin() {
   const mountRef = useRef<HTMLDivElement>(null);

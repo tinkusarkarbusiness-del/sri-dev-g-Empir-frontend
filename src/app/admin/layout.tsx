@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
 import { adminNavLinks } from "@/lib/data";
 
-const OWNER_EMAIL = "tinkusarkar.basiness@email.com";
+const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export default function AdminLayout({
   children,

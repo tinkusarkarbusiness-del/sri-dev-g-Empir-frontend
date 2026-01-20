@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { doc, getDoc } from "firebase/firestore"
-import { auth } from "@/lib/auth"
+import { auth, db } from "@/firebase/config"
 import { db } from "@/firebase/config"
 
 export default function DashboardPage() {

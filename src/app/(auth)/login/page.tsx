@@ -1,7 +1,7 @@
 
 'use client';
 import { doc as firestoreDoc } from 'firebase/firestore';
-import { firestore } from "@/firebase/config";
+import { db } from '@/firebase/config';
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';

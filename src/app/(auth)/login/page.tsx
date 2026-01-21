@@ -1,23 +1,19 @@
 
 'use client';
-import { doc as firestoreDoc } from 'firebase/firestore';
-import { auth, db } from "@/firebase/config"
-import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import * as THREE from 'three';
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import * as THREE from "three";
+
+import { auth, db } from "@/firebase/client";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
-} from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import { useFirebase, useUser } from '@/firebase';
-import {
-  initiateEmailSignIn,
-  initiateEmailSignUp,
-} from '@/firebase/non-blocking-login';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { useToast } from '@/hooks/use-toast';
+} from "firebase/auth";
+
+import { doc as firestoreDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export default function SatpudaLogin() {

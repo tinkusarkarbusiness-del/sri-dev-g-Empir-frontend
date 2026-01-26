@@ -1,5 +1,6 @@
-
+ 
 'use client';
+
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
@@ -9,431 +10,227 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { doc as firestoreDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export default function SatpudaLogin() {
   const mountRef = useRef<HTMLDivElement>(null);
   const particleRef = useRef<HTMLCanvasElement>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('signup'); // 'signup' or 'login'
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"signup" | "login">("signup");
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
   const { toast } = useToast();
+  const [user] = useAuthState(auth);
 
-  // Three.js globe
+  /* ---------------- THREE.JS GLOBE ---------------- */
   useEffect(() => {
     if (!mountRef.current) return;
 
-    let renderer: THREE.WebGLRenderer,
-      scene: THREE.Scene,
-      camera: THREE.PerspectiveCamera,
-      globe: THREE.Mesh,
-      frameId: number;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
+
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
 
-    // Renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
     mountRef.current.appendChild(renderer.domElement);
 
-    // Scene + Camera
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
     camera.position.set(0, 0, 6);
 
-    // Lights
-    const amb = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(amb);
-    const dir = new THREE.DirectionalLight(0xffd27f, 0.6);
-    dir.position.set(5, 3, 5);
-    scene.add(dir);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
-    // Globe geometry
     const geometry = new THREE.SphereGeometry(1.9, 64, 64);
-
-    // Wireframe globe material (neon green lines)
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x000000,
-      metalness: 0.1,
-      roughness: 0.4,
-      emissive: 0x00ff88,
-      emissiveIntensity: 0.02,
-      transparent: true,
-      opacity: 0.6,
-    });
-
-    globe = new THREE.Mesh(geometry, mat);
-    scene.add(globe);
-
-    // Wireframe overlay
-    const wireframe = new THREE.LineSegments(
-      new THREE.WireframeGeometry(geometry),
-      new THREE.LineBasicMaterial({
-        color: 0x00ff88,
-        linewidth: 1,
+    const globe = new THREE.Mesh(
+      geometry,
+      new THREE.MeshStandardMaterial({
+        color: 0x000000,
+        emissive: 0x00ff88,
+        emissiveIntensity: 0.05,
         transparent: true,
-        opacity: 0.25,
+        opacity: 0.6,
       })
     );
+
+    const wireframe = new THREE.LineSegments(
+      new THREE.WireframeGeometry(geometry),
+      new THREE.LineBasicMaterial({ color: 0x00ff88, opacity: 0.25, transparent: true })
+    );
+
+    scene.add(globe);
     scene.add(wireframe);
 
-    // Animated atmosphere ring
-    const ringGeo = new THREE.RingGeometry(2.05, 2.12, 64);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xffd700,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.06,
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI / 2.1;
-    scene.add(ring);
-
-    // simple stars
-    const starsGeometry = new THREE.BufferGeometry();
-    const starsCount = 600;
-    const positions = new Float32Array(starsCount * 3);
-    for (let i = 0; i < starsCount * 3; i++)
-      positions[i] = (Math.random() - 0.5) * 60;
-    starsGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(positions, 3)
-    );
-    const starsMaterial = new THREE.PointsMaterial({
-      size: 0.3,
-      color: 0xffd700,
-      transparent: true,
-      opacity: 0.06,
-    });
-    const starField = new THREE.Points(starsGeometry, starsMaterial);
-    scene.add(starField);
-
-    // Animation
+    let frameId: number;
     const animate = () => {
       frameId = requestAnimationFrame(animate);
-      globe.rotation.y += 0.0025;
+      globe.rotation.y += 0.002;
       wireframe.rotation.y += 0.003;
-      ring.rotation.z += 0.0015;
-      starField.rotation.y += 0.0003;
       renderer.render(scene, camera);
     };
     animate();
 
-    // Resize
-    const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    };
-    window.addEventListener('resize', handleResize);
-
-    const mountRefCurrent = mountRef.current;
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', handleResize);
-      if (mountRefCurrent) {
-        mountRefCurrent.removeChild(renderer.domElement);
-      }
       renderer.dispose();
+      mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
 
-  // Particle canvas (foreground motion)
+  /* ---------------- PARTICLES ---------------- */
   useEffect(() => {
-    if (!particleRef.current) return;
     const canvas = particleRef.current;
-    const ctx = canvas.getContext('2d');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    let particles: any[] = [];
-    let w: number, h: number;
-    let animationFrameId: number;
 
-    const init = () => {
-      w = canvas.width = canvas.clientWidth;
-      h = canvas.height = canvas.clientHeight;
-      particles = [];
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: Math.random() * 2 + 0.5,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          alpha: Math.random() * 0.6 + 0.2,
-        });
-      }
-    };
-    init();
+    let w = canvas.width = canvas.clientWidth;
+    let h = canvas.height = canvas.clientHeight;
 
-    const render = () => {
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2 + 0.5,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      a: Math.random() * 0.6 + 0.2,
+    }));
+
+    let id: number;
+    const draw = () => {
       ctx.clearRect(0, 0, w, h);
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = w;
-        if (p.x > w) p.x = 0;
-        if (p.y < 0) p.y = h;
-        if (p.y > h) p.y = 0;
+      particles.forEach(p => {
+        p.x = (p.x + p.vx + w) % w;
+        p.y = (p.y + p.vy + h) % h;
+        ctx.fillStyle = `rgba(255,215,0,${p.a})`;
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,215,0,${p.alpha})`;
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
-      }
-      animationFrameId = requestAnimationFrame(render);
+      });
+      id = requestAnimationFrame(draw);
     };
-    render();
+    draw();
 
-    const onResize = () => init();
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => cancelAnimationFrame(id);
   }, []);
 
-  // Auth handlers
-const handleGoogle = async () => {
-  try {
-    setLoading(true);
+  /* ---------------- AUTH LOGIC ---------------- */
 
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const u = result.user;
-
-    const token = await u.getIdToken();
-
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Login failed");
-    }
-
-    const data = await res.json();
-
-    if (data.role === "admin") {
-      router.replace("/admin/dashboard");
-    } else {
-      router.replace("/dashboard");
-    }
-
-    const userDocRef = doc(firestore, 'users', u.uid);
-    setDocumentNonBlocking(
-      userDocRef,
+  const saveUser = async (u: any) => {
+    await setDoc(
+      doc(db, "users", u.uid),
       {
         uid: u.uid,
         email: u.email,
-        displayName: u.displayName,
-        createdAt: new Date(),
+        name: u.displayName || "",
+        role: u.email === OWNER_EMAIL ? "admin" : "user",
+        createdAt: serverTimestamp(),
       },
       { merge: true }
     );
+  };
 
-  } catch (err) {
-    console.error(err);
-    toast({
-      variant: "destructive",
-      title: "Uh oh! Something went wrong.",
-      description: "Google sign-in failed",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const handleSignUp = async () => {
-    if (!email || !password) {
-        toast({
-            variant: "destructive",
-            title: "Missing fields",
-            description: "Please enter both email and password.",
-        });
-        return;
-    }
+  const handleGoogle = async () => {
     try {
       setLoading(true);
-      initiateEmailSignUp(auth, email, password);
-    } catch (err) {
-      console.error(err);
-      toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Sign up failed: " + (err as Error).message,
-        });
+      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      await saveUser(result.user);
+      router.replace(result.user.email === OWNER_EMAIL ? "/admin/dashboard" : "/dashboard");
+    } catch {
+      toast({ variant: "destructive", title: "Google login failed" });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleLogin = async () => {
-     if (!email || !password) {
-        toast({
-            variant: "destructive",
-            title: "Missing fields",
-            description: "Please enter both email and password.",
-        });
-        return;
-    }
+  const handleEmailAuth = async () => {
     try {
       setLoading(true);
-      initiateEmailSignIn(auth, email, password);
-    } catch (err) {
-      console.error(err);
-      toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Login failed",
-        });
+
+      const cred =
+        mode === "signup"
+          ? await createUserWithEmailAndPassword(auth, email, password)
+          : await signInWithEmailAndPassword(auth, email, password);
+
+      await saveUser(cred.user);
+      router.replace(cred.user.email === OWNER_EMAIL ? "/admin/dashboard" : "/dashboard");
+    } catch (e: any) {
+      toast({ variant: "destructive", title: e.message });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
-  const greeting = user
-    ? ` Jai Satpuda! Welcome back, ${user.displayName || user.email}`
-    : 'Welcome to Sri Dev Empire — Join the Divine Network';
+  /* ---------------- UI ---------------- */
 
   return (
-    <div className="min-h-screen w-full bg-black relative overflow-hidden font-sans">
-      <div
-        ref={mountRef}
-        className="absolute left-0 top-0 w-2/3 h-full pointer-events-none"
-      />
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      <div ref={mountRef} className="absolute inset-y-0 left-0 w-2/3" />
+      <canvas ref={particleRef} className="absolute inset-0" />
 
-      <canvas
-        ref={particleRef}
-        className="absolute left-0 top-0 w-full h-full pointer-events-none"
-      />
-
-      <div className="absolute top-6 left-8 z-30 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-yellow-400 flex items-center justify-center shadow-2xl">
-          <span className="text-black font-bold text-lg">🔱</span>
-        </div>
-        <div className="text-white">
-          <div className="text-lg font-bold">SriDev Empire</div>
-          <div className="text-xs opacity-70">Satpuda Engine v2.0</div>
-        </div>
-      </div>
-
-      <div className="absolute right-0 md:right-12 top-1/2 transform -translate-y-1/2 z-40 w-full md:w-[420px] p-4 md:p-0">
+      <div className="absolute right-10 top-1/2 -translate-y-1/2 w-[420px] z-20">
         <motion.div
-          initial={{ y: 40, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          className="backdrop-blur-md bg-black/60 border border-yellow-500/50 rounded-2xl p-8 shadow-2xl"
+          className="bg-black/60 backdrop-blur border border-yellow-500/40 rounded-2xl p-8"
         >
-          <div className="mb-4">
-            <h2 className="text-2xl font-extrabold text-yellow-400">
-              {mode === 'signup' ? 'Create an Account' : 'Welcome Back'}
-            </h2>
-            <p className="text-sm text-white/70">
-              {mode === 'signup'
-                ? 'Join the empire and unlock your potential.'
-                : 'Enter your credentials to access the empire.'}
-            </p>
-          </div>
+          <h2 className="text-2xl font-bold text-yellow-400 mb-2">
+            {mode === "signup" ? "Create Account" : "Welcome Back"}
+          </h2>
 
-          <div className="space-y-4">
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full p-3 rounded-md bg-transparent border border-yellow-800 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              type="password"
-              className="w-full p-3 rounded-md bg-transparent border border-yellow-800 text-white placeholder:text-white/60 outline-none focus:ring-2 focus:ring-yellow-400"
-            />
+          <input
+            className="w-full mb-3 p-3 bg-transparent border border-yellow-700 rounded"
+            placeholder="Email"
+            onChange={e => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            className="w-full mb-4 p-3 bg-transparent border border-yellow-700 rounded"
+            placeholder="Password"
+            onChange={e => setPassword(e.target.value)}
+          />
 
-            <div className="flex gap-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() =>
-                  mode === 'signup' ? handleSignUp() : handleLogin()
-                }
-                disabled={loading}
-                className="flex-1 py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-yellow-600 text-black shadow-lg disabled:opacity-50"
-              >
-                {loading ? 'Processing...' : (mode === 'signup' ? 'Sign Up with Email' : 'Login')}
-              </motion.button>
-              <button
-                onClick={() => setMode(mode === 'signup' ? 'login' : 'signup')}
-                className="px-3 py-3 rounded-lg border border-yellow-700 text-yellow-400"
-              >
-                {mode === 'signup' ? 'Switch to Login' : 'Switch to Sign Up'}
-              </button>
-            </div>
+          <button
+            onClick={handleEmailAuth}
+            disabled={loading}
+            className="w-full py-3 bg-yellow-400 text-black font-bold rounded mb-3"
+          >
+            {loading ? "Processing..." : mode === "signup" ? "Sign Up" : "Login"}
+          </button>
 
-            <div className="py-2 text-center">
-              <div className="mb-2 text-xs text-white/60">
-                OR CONTINUE WITH
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                onClick={handleGoogle}
-                disabled={loading}
-                className="w-full py-3 rounded-md border border-yellow-700 bg-black/40 text-white font-medium disabled:opacity-50"
-              >
-                <span className="mr-2">G</span> Continue with Google
-              </motion.button>
-            </div>
+          <button
+            onClick={handleGoogle}
+            className="w-full py-3 border border-yellow-700 rounded"
+          >
+            Continue with Google
+          </button>
 
-            <div className="text-xs text-white/60">
-              By clicking continue, you agree to our{' '}
-              <u className="cursor-pointer">Terms of Service</u> and{' '}
-              <u className="cursor-pointer">Privacy Policy</u>.
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="mt-6 text-right text-xs text-white/50">
-          Sri Dev G Empire™ • Powered by Sri Dev G™
-        </div>
-      </div>
-
-      <div className="absolute bottom-8 left-8 z-30 text-white/70">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-        >
-          <div className="text-sm">🌍 Empowering Digital Souls</div>
-          <div className="text-xs opacity-60">
-            High-motion Satpuda UI • Globe Animation • Particle Energy
-          </div>
+          <p
+            onClick={() => setMode(mode === "signup" ? "login" : "signup")}
+            className="mt-4 text-xs text-center cursor-pointer text-yellow-400"
+          >
+            Switch to {mode === "signup" ? "Login" : "Sign Up"}
+          </p>
         </motion.div>
       </div>
     </div>
   );
 }
-
-    
-
-    

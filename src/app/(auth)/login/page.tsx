@@ -10,7 +10,11 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { doc as firestoreDoc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
@@ -22,8 +26,6 @@ export default function SatpudaLogin() {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('signup'); // 'signup' or 'login' 
   const [loading, setLoading] = useState(false);
-  const { auth, firestore } = useFirebase();
-  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -236,17 +238,17 @@ const handleGoogle = async () => {
       router.replace("/dashboard");
     }
 
-    const userDocRef = doc(firestore, 'users', u.uid);
-    setDocumentNonBlocking(
-      userDocRef,
-      {
-        uid: u.uid,
-        email: u.email,
-        displayName: u.displayName,
-        createdAt: new Date(),
-      },
-      { merge: true }
-    );
+    const userDocRef = doc(db, 'users', u.uid);
+   await setDoc(
+  userDocRef,
+  {
+    uid: u.uid,
+    email: u.email,
+    displayName: u.displayName,
+    createdAt: serverTimestamp(),
+  },
+  { merge: true }
+);
 
   } catch (err) {
     console.error(err);
@@ -272,7 +274,8 @@ const handleGoogle = async () => {
     }
     try {
       setLoading(true);
-      initiateEmailSignUp(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
+router.replace("/dashboard");
     } catch (err) {
       console.error(err);
       toast({
@@ -296,7 +299,8 @@ const handleGoogle = async () => {
     }
     try {
       setLoading(true);
-      initiateEmailSignIn(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
+router.replace("/dashboard");
     } catch (err) {
       console.error(err);
       toast({
@@ -313,9 +317,7 @@ const handleGoogle = async () => {
     await signOut(auth);
   };
 
-  const greeting = user
-    ? ` Jai Satpuda! Welcome back, ${user.displayName || user.email}`
-    : 'Welcome to Sri Dev Empire — Join the Divine Network';
+ const greeting = 'Welcome to Sri Dev Empire — Join the Divine Network';
 
   return (
     <div className="min-h-screen w-full bg-black relative overflow-hidden font-sans">

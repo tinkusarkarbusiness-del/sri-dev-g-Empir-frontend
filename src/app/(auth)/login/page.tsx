@@ -20,8 +20,10 @@ export default function SatpudaLogin() {
   const particleRef = useRef<HTMLCanvasElement>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('signup'); // 'signup' or 'login'
+  const [mode, setMode] = useState('signup'); // 'signup' or 'login' 
   const [loading, setLoading] = useState(false);
+  const { auth, firestore } = useFirebase();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 

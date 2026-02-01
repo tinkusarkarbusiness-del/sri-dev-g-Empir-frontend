@@ -14,7 +14,7 @@ export function SiteFooter() {
               Divine Intelligence Network
             </p>
             <p className="text-xs text-muted-foreground">
-                © 2025 SriDevG Empire™. All Rights Reserved.
+                © 2026 SriDevG Empire™. All Rights Reserved.
             </p>
         </div>
       </div>

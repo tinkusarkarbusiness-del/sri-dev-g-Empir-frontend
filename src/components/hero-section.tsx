@@ -91,7 +91,7 @@ export default function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ delay: 2 }}
       >
-        © 2025 Sri Dev G™ Digital Empire. All rights reserved.
+        © 2026 Sri Dev G™ Digital Empire. All rights reserved.
       </motion.p>
     </section>
   );

@@ -3,6 +3,13 @@ import { Toaster } from "@/components/ui/toaster"
 import { Poppins, Space_Grotesk as SpaceGrotesk } from 'next/font/google'
 import { cn } from '@/lib/utils'
 
+export const metadata = {
+  title: "Sri Dev G Empire",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 const fontPoppins = Poppins({
   subsets: ['latin'],
   weight: ['700'],

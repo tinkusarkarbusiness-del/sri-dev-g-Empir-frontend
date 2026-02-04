@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Privacy Policy | SriDev G Empire",
+  title: "Privacy Policy | Sri Dev G Empire",
 };
 
 export default function PrivacyPolicy() {

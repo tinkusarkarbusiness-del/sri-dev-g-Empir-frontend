@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
       <p><strong>Effective Date:</strong> 01-01-2026</p>
 
       <p>
-        Welcome to Sri Dev G Empire (https://sridevgempire.com).
+        Welcome to Sri Dev G Empire (https://www.sridevgempire.com).
         Your privacy is important to us. This Privacy Policy explains how we collect,
         use, and protect your information when you use our website and services.
       </p>

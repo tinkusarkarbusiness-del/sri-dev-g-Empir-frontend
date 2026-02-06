@@ -10,8 +10,8 @@ export function SiteFooter() {
         <div className="flex flex-col items-center text-center space-y-3">
           <SriDevLogo className="h-9 w-9 text-yellow-500 drop-shadow-[0_0_6px_rgba(255,215,0,0.6)]" />
 
-          <h2 className="text-🔱l font-semibold tracking-wide text-yellow-400">
-           🔱 Sri Dev G Empire™
+          <h2 className="text-xl font-semibold tracking-wide text-yellow-400">
+            🔱 Sri Dev G Empire™
           </h2>
 
           <p className="text-sm text-yellow-200/70">
@@ -20,7 +20,7 @@ export function SiteFooter() {
         </div>
 
         {/* Links */}
-        <div className="flex justify-center gap-8 mt-8 text-sm font-medium">
+        <div className="flex justify-center gap-8 mt-8 text-sm font-medium flex-wrap">
 
           <Link href="/" className="text-yellow-300 hover:text-yellow-400 hover:drop-shadow-[0_0_6px_rgba(255,215,0,0.8)] transition">
             Home

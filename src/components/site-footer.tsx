@@ -8,13 +8,13 @@ export function SiteFooter() {
         <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-2 mb-2">
                 <span className="text-2xl">🔱</span>
-                <span className="font-headline text-lg font-bold text-primary">SriDevG Empire™</span>
+                <span className="font-headline text-lg font-bold text-primary">Sri DevG Empire™</span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
               Divine Intelligence Network
             </p>
             <p className="text-xs text-muted-foreground">
-                © 2026 SriDevG Empire™. All Rights Reserved.
+                © 2026 Sri DevG Empire™. All Rights Reserved.
             </p>
         </div>
       </div>

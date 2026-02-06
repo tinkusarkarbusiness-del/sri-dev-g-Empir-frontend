@@ -4,10 +4,10 @@ import Image from "next/image";
 export default function AboutPage() {
   return (
     <div style={{ padding: "40px", maxWidth: "900px", margin: "auto" }}>
-      <h1>About SriDev G Empire</h1>
+      <h1>About Sri Dev G Empire</h1>
 
       <p>
-        SriDev G Empire is a next-generation digital technology platform built
+        Sri Dev G Empire is a next-generation digital technology platform built
         to deliver secure, scalable, and intelligent solutions for users,
         businesses, and innovators. Our ecosystem combines modern web
         technology, AI-driven systems, and user-centric design.
@@ -40,11 +40,11 @@ export default function AboutPage() {
         />
         <div>
           <h3>Sri Barendra Sarkar</h3>
-          <p><strong>Founder & CEO – SriDev G Empire</strong></p>
+          <p><strong>Founder & CEO – Sri Dev G Empire</strong></p>
           <p>
             Sri Barendra Sarkar is a visionary entrepreneur focused on building
             powerful digital platforms with transparency, innovation, and
-            long-term growth. His leadership drives SriDev G Empire toward
+            long-term growth. His leadership drives Sri Dev G Empire toward
             becoming a globally trusted tech brand.
           </p>
         </div>

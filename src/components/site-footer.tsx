@@ -5,7 +5,11 @@ export function SiteFooter() {
   return (
     <footer className="border-t mt-16 bg-gradient-to-b from-[#0b0b0f] to-[#111118]">
       <div className="container mx-auto px-4 py-12">
-        
+
+        {/* Logo + Brand */}
+        <div className="flex flex-col items-center text-center space-y-3">
+          <SriDevLogo className="h-9 w-9 text-yellow-500 drop-shadow-[0_0_6px_rgba(255,215,0,0.6)]" />
+
           <h2 className="text-xl font-semibold tracking-wide text-yellow-400">
             🔱 Sri Dev G Empire™
           </h2>

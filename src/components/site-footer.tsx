@@ -21,7 +21,6 @@ export function SiteFooter() {
 
         {/* Links */}
         <div className="flex justify-center gap-8 mt-8 text-sm font-medium flex-wrap">
-
           <Link href="/" className="text-yellow-300 hover:text-yellow-400 hover:drop-shadow-[0_0_6px_rgba(255,215,0,0.8)] transition">
             Home
           </Link>
@@ -43,7 +42,7 @@ export function SiteFooter() {
           </Link>
         </div>
 
-        {/* Divider Glow Line */}
+        {/* Divider */}
         <div className="mt-8 h-px w-full bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
 
         {/* Copyright */}

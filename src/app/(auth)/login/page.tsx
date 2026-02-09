@@ -215,45 +215,31 @@ const handleGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const u = result.user;
 
-    const token = await u.getIdToken();
+    // ---------- SAVE USER PROFILE ----------
+    const userRef = doc(db, "users", u.uid);
+    await setDoc(userRef, {
+      uid: u.uid,
+      email: u.email,
+      name: u.displayName || "",
+      photo: u.photoURL || "",
+      createdAt: serverTimestamp(),
+    }, { merge: true });
 
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token }),
-    });
+    // ---------- CHECK ADMIN ROLE ----------
+    const roleRef = doc(db, "roles_admin", u.uid);
+    const roleSnap = await getDoc(roleRef);
 
-    if (!res.ok) {
-      throw new Error("Login failed");
-    }
-
-    const data = await res.json();
-
-    if (data.role === "admin") {
+    if (roleSnap.exists()) {
       router.replace("/admin/dashboard");
     } else {
       router.replace("/dashboard");
     }
 
-    const userDocRef = doc(db, 'users', u.uid);
-   await setDoc(
-  userDocRef,
-  {
-    uid: u.uid,
-    email: u.email,
-    displayName: u.displayName,
-    createdAt: serverTimestamp(),
-  },
-  { merge: true }
-);
-
   } catch (err) {
     console.error(err);
     toast({
       variant: "destructive",
-      title: "Uh oh! Something went wrong.",
+      title: "Login failed",
       description: "Google sign-in failed",
     });
   } finally {

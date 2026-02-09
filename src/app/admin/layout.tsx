@@ -5,8 +5,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
 import { adminNavLinks } from "@/lib/data";
 
-const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
-
 export default function AdminLayout({
   children,
 }: {
@@ -20,7 +18,7 @@ export default function AdminLayout({
     const role = localStorage.getItem("role");
     const email = localStorage.getItem("email");
 
-    if (role === "admin" && email === OWNER_EMAIL) {
+    if (role === "admin") {
       setChecked(true); // ✅ allow render
     } else {
       localStorage.clear();

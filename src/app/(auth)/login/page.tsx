@@ -17,7 +17,6 @@ import {
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export default function SatpudaLogin() {
   const mountRef = useRef<HTMLDivElement>(null);

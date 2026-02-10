@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 import { firebaseAdminApp } from "@/firebase/adminConfig";
 import { cookies } from "next/headers";
-
-const OWNER_EMAIL = "tinkusarkar.basiness@gmail.com";
 
 export async function POST(req: Request) {
   try {
@@ -13,15 +12,33 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No token" }, { status: 400 });
     }
 
-    // 🔐 Firebase token verify
+    // 🔐 Verify Firebase token
     const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
+    const db = getFirestore(firebaseAdminApp);
 
-    // 🧠 ROLE DECISION (SERVER SIDE)
-    const role = decoded.email === OWNER_EMAIL ? "admin" : "user";
+    const uid = decoded.uid;
+    const email = decoded.email ?? "";
+
+    // 🔎 Check user in Firestore
+    const userRef = db.collection("users").doc(uid);
+    const userSnap = await userRef.get();
+
+    let role = "user";
+
+    if (!userSnap.exists) {
+      // 🆕 First login → create user (default user)
+      await userRef.set({
+        email,
+        role: "user",
+        createdAt: new Date(),
+      });
+    } else {
+      role = userSnap.data()?.role || "user";
+    }
 
     const cookieStore = cookies();
 
-    // 🔐 Auth token (httpOnly = secure)
+    // 🔐 Session cookie
     cookieStore.set("__session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -42,3 +59,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }
+

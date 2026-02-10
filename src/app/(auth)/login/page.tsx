@@ -299,8 +299,18 @@ router.replace("/dashboard");
   };
 
   const handleLogout = async () => {
+  try {
     await signOut(auth);
-  };
+
+    await fetch("/api/logout", {
+      method: "POST",
+    });
+
+    router.replace("/login");
+  } catch (err) {
+    console.error("Logout error", err);
+  }
+};
 
  const greeting = 'Welcome to Sri Dev Empire — Join the Divine Network';
 

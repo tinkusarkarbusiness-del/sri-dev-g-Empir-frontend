@@ -321,7 +321,7 @@ router.replace("/dashboard");
           <span className="text-black font-bold text-lg">🔱</span>
         </div>
         <div className="text-white">
-          <div className="text-lg font-bold">SriDev Empire</div>
+          <div className="text-lg font-bold">Sri Dev G Empire</div>
           <div className="text-xs opacity-70">Satpuda Engine v2.0</div>
         </div>
       </div>

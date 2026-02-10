@@ -215,26 +215,44 @@ const handleGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const u = result.user;
 
+    // 🔐 Get Firebase ID token
+    const token = await u.getIdToken();
+
+    // 🔥 CALL SERVER LOGIN (IMPORTANT)
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error("Server login failed");
+    }
+
     // ---------- SAVE USER PROFILE ----------
     const userRef = doc(db, "users", u.uid);
-    await setDoc(userRef, {
-      uid: u.uid,
-      email: u.email,
-      name: u.displayName || "",
-      photo: u.photoURL || "",
-      createdAt: serverTimestamp(),
-    }, { merge: true });
+    await setDoc(
+      userRef,
+      {
+        uid: u.uid,
+        email: u.email,
+        name: u.displayName || "",
+        photo: u.photoURL || "",
+        createdAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-    // ---------- CHECK ADMIN ROLE ----------
-    const roleRef = doc(db, "roles_admin", u.uid);
-    const roleSnap = await getDoc(roleRef);
-
-    if (roleSnap.exists()) {
+    // 🔀 ROLE BASED REDIRECT (FROM SERVER)
+    if (data.role === "admin") {
       router.replace("/admin/dashboard");
     } else {
       router.replace("/dashboard");
     }
-
   } catch (err) {
     console.error(err);
     toast({
@@ -246,7 +264,6 @@ const handleGoogle = async () => {
     setLoading(false);
   }
 };
-
 
   const handleSignUp = async () => {
     if (!email || !password) {

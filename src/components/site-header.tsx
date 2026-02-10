@@ -30,7 +30,7 @@ export function SiteHeader() {
             <Link href="/" className="flex items-center gap-2">
                 <span className="text-2xl">🔱</span>
                 <h1 className="text-yellow-400 text-lg sm:text-xl font-headline font-bold tracking-wider drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">
-                Sri DevG™ Empire
+                Sri Dev G™ Empire
                 </h1>
             </Link>
           </motion.div>

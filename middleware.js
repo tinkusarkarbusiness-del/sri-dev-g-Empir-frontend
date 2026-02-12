@@ -7,15 +7,17 @@ export function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
+  // Allow login page always
+  if (pathname.startsWith("/login")) {
+    return NextResponse.next();
+  }
+
   // ❌ Not logged in
-  if (
-    !token &&
-    (pathname.startsWith("/dashboard") || pathname.startsWith("/admin"))
-  ) {
+  if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // ❌ User trying admin area
+  // ❌ Non-admin opening admin
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }

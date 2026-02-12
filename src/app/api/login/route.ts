@@ -19,22 +19,34 @@ export async function POST(req: Request) {
     const uid = decoded.uid;
     const email = decoded.email ?? "";
 
-    // 🔎 Check user in Firestore
-    const userRef = db.collection("users").doc(uid);
-    const userSnap = await userRef.get();
+   // 🔎 Check user in Firestore
+const userRef = db.collection("users").doc(uid);
+const userSnap = await userRef.get();
 
-    let role = "user";
+const OWNER_EMAIL = "tinkusarkar.business@gmail.com";
 
-    if (!userSnap.exists) {
-      // 🆕 First login → create user (default user)
-      await userRef.set({
-        email,
-        role: "user",
-        createdAt: new Date(),
-      });
-    } else {
-      role = userSnap.data()?.role || "user";
-    }
+let role = "user";
+
+if (email === OWNER_EMAIL) {
+  role = "admin";
+
+  await userRef.set(
+    {
+      email,
+      role: "admin",
+      createdAt: new Date(),
+    },
+    { merge: true }
+  );
+} else if (userSnap.exists) {
+  role = userSnap.data()?.role || "user";
+} else {
+  await userRef.set({
+    email,
+    role: "user",
+    createdAt: new Date(),
+  });
+}
 
     const cookieStore = cookies();
 
@@ -59,4 +71,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }
-

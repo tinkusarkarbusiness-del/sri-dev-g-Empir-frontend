@@ -216,9 +216,9 @@ const handleGoogle = async () => {
     const u = result.user;
 
     // 🔐 Get Firebase ID token
-    const token = await u.getIdToken();
+    const token = await u.getIdToken(true); // force refresh
 
-    // 🔥 CALL SERVER LOGIN (IMPORTANT)
+    // 🔥 CALL SERVER LOGIN
     const res = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -247,12 +247,15 @@ const handleGoogle = async () => {
       { merge: true }
     );
 
-    // 🔀 ROLE BASED REDIRECT (FROM SERVER)
-    if (data.role === "admin") {
-  window.location.href = "/admin/dashboard";
-} else {
-  window.location.href = "/dashboard";
-}
+    // ⏳ Wait for cookies to be saved
+    setTimeout(() => {
+      if (data.role === "admin") {
+        window.location.href = "/admin/dashboard";
+      } else {
+        window.location.href = "/dashboard";
+      }
+    }, 300);
+
   } catch (err) {
     console.error(err);
     toast({
@@ -291,29 +294,44 @@ window.location.href = "/dashboard";
   };
 
   const handleLogin = async () => {
-     if (!email || !password) {
-        toast({
-            variant: "destructive",
-            title: "Missing fields",
-            description: "Please enter both email and password.",
-        });
-        return;
-    }
-    try {
-      setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-router.replace("/dashboard");
-    } catch (err) {
-      console.error(err);
-      toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Login failed",
-        });
-    } finally {
-        setLoading(false);
-    }
-  };
+  if (!email || !password) return;
+
+  try {
+    setLoading(true);
+
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+
+    const token = await cred.user.getIdToken(true);
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    const data = await res.json();
+
+    setTimeout(() => {
+      if (data.role === "admin") {
+        window.location.href = "/admin/dashboard";
+      } else {
+        window.location.href = "/dashboard";
+      }
+    }, 300);
+
+  } catch (err) {
+    console.error(err);
+    toast({
+      variant: "destructive",
+      title: "Login failed",
+      description: "Login failed",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleLogout = async () => {
   try {

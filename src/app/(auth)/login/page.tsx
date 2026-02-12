@@ -249,10 +249,10 @@ const handleGoogle = async () => {
 
     // 🔀 ROLE BASED REDIRECT (FROM SERVER)
     if (data.role === "admin") {
-      router.replace("/admin/dashboard");
-    } else {
-      router.replace("/dashboard");
-    }
+  window.location.href = "/admin/dashboard";
+} else {
+  window.location.href = "/dashboard";
+}
   } catch (err) {
     console.error(err);
     toast({
@@ -319,11 +319,9 @@ router.replace("/dashboard");
   try {
     await signOut(auth);
 
-    await fetch("/api/logout", {
-      method: "POST",
-    });
+    await fetch("/api/logout", { method: "POST" });
 
-    router.replace("/login");
+    window.location.href = "/login";
   } catch (err) {
     console.error("Logout error", err);
   }

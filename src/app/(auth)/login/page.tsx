@@ -277,7 +277,7 @@ const handleGoogle = async () => {
     try {
       setLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
-router.replace("/dashboard");
+window.location.href = "/dashboard";
     } catch (err) {
       console.error(err);
       toast({

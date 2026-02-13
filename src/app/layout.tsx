@@ -2,6 +2,7 @@ import './globals.css'
 import { Toaster } from "@/components/ui/toaster"
 import { Poppins, Space_Grotesk as SpaceGrotesk } from 'next/font/google'
 import { cn } from '@/lib/utils'
+import Script from "next/script"
 
 export const metadata = {
   title: "Sri Dev G Empire",
@@ -40,6 +41,20 @@ export default function RootLayout({
           fontSpaceGrotesk.variable
         )}
       >
+
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-2JZ38CEJEK"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-2JZ38CEJEK');
+          `}
+        </Script>
+        
         {children}
         <Toaster />
       </body>

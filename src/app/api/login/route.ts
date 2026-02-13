@@ -56,7 +56,6 @@ if (email === OWNER_EMAIL) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      domain: ".www.sridevgempire.com",
       maxAge: 60 * 60 * 24 * 5,
     });
 

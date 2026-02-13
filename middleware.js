@@ -4,22 +4,18 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("__session")?.value;
   const role = req.cookies.get("role")?.value;
-
   const { pathname } = req.nextUrl;
 
-  // Allow login page always
-  if (pathname.startsWith("/login")) {
-    return NextResponse.next();
-  }
-
-  // ❌ Not logged in
+  // 🔐 Block unauth users
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // ❌ Non-admin opening admin
-  if (pathname.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // 🔐 Admin protection
+  if (pathname.startsWith("/admin")) {
+    if (role !== "admin") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
 
   return NextResponse.next();

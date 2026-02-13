@@ -250,9 +250,11 @@ const handleGoogle = async () => {
     // ⏳ Wait for cookies to be saved
     setTimeout(() => {
       if (data.role === "admin") {
-        window.location.href = "/admin/dashboard";
+         router.replace("/admin/dashboard");
+  router.refresh();
       } else {
-        window.location.href = "/dashboard";
+        router.replace("/dashboard");
+  router.refresh();
       }
     }, 300);
 

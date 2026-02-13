@@ -201,14 +201,6 @@ export const sampleUsers = [
   { id: 'usr_005', name: 'Advik Singh', email: 'advik.singh@example.com', role: 'Admin', status: 'Active', avatar: 'avatar-5' },
 ];
 
-export const sampleTransactions = [
-  { id: 'txn_001', date: '2023-10-26', description: 'Monthly Subscription - Visionary', amount: '₹1,999.00', type: 'Credit' },
-  { id: 'txn_002', date: '2023-10-25', description: 'Payout to Bank Account', amount: '-₹5,000.00', type: 'Debit' },
-  { id: 'txn_003', date: '2023-10-22', description: 'Blessing Purchase', amount: '₹251.00', type: 'Credit' },
-  { id: 'txn_004', date: '2023-10-20', description: 'Top-up from UPI', amount: '₹10,000.00', type: 'Credit' },
-  { id: 'txn_005', date: '2023-10-18', description: 'Monthly Subscription - Visionary', amount: '₹1,999.00', type: 'Credit' },
-];
-
 export const samplePayouts = [
   { id: 'pay_001', date: '2023-10-26', userName: 'Aarav Sharma', amount: '₹2,500.00', status: 'Pending', upiId: 'aarav.s@okhdfcbank' },
   { id: 'pay_002', date: '2023-10-25', userName: 'Isha Reddy', amount: '₹15,000.00', status: 'Pending', upiId: 'isha.ascended@okaxis' },

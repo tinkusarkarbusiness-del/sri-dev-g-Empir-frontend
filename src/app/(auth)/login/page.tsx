@@ -249,14 +249,12 @@ const handleGoogle = async () => {
 
     // ⏳ Wait for cookies to be saved
     setTimeout(() => {
-      if (data.role === "admin") {
-         router.replace("/admin/dashboard");
-  router.refresh();
-      } else {
-        router.replace("/dashboard");
-  router.refresh();
-      }
-    }, 300);
+  if (data.role === "admin") {
+    window.location.href = "/admin/dashboard";
+  } else {
+    window.location.href = "/dashboard";
+  }
+}, data.role === "admin" ? 600 : 300);
 
   } catch (err) {
     console.error(err);

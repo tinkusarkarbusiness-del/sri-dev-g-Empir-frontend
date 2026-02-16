@@ -4,12 +4,12 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const role = req.cookies.get("role")?.value;
 
-  // login page ko allow karo (IMPORTANT)
+  console.log("ROLE =", role); // debug
+
   if (req.nextUrl.pathname.startsWith("/login")) {
     return NextResponse.next();
   }
 
-  // admin page protect karo
   if (req.nextUrl.pathname.startsWith("/admin")) {
     if (role !== "admin") {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -19,3 +19,6 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+export const config = {
+  matcher: ["/admin/:path*", "/login"],
+};

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { firebaseAdminApp } from "@/firebase/adminConfig";
-import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -12,62 +11,67 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No token" }, { status: 400 });
     }
 
-    // 🔐 Verify Firebase token
+    // 🔐 Verify Firebase ID token
     const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
     const db = getFirestore(firebaseAdminApp);
 
     const uid = decoded.uid;
     const email = decoded.email ?? "";
 
-   // 🔎 Check user in Firestore
-const userRef = db.collection("users").doc(uid);
-const userSnap = await userRef.get();
+    // 🔎 Firestore user check
+    const userRef = db.collection("users").doc(uid);
+    const userSnap = await userRef.get();
 
-const OWNER_EMAIL = "tinkusarkar.business@gmail.com";
+    const OWNER_EMAIL = "tinkusarkar.business@gmail.com";
 
-let role = "user";
+    let role = "user";
 
-if (email === OWNER_EMAIL) {
-  role = "admin";
+    if (email === OWNER_EMAIL) {
+      role = "admin";
 
-  await userRef.set(
-    {
-      email,
-      role: "admin",
-      createdAt: new Date(),
-    },
-    { merge: true }
-  );
-} else if (userSnap.exists) {
-  role = userSnap.data()?.role || "user";
-} else {
-  await userRef.set({
-    email,
-    role: "user",
-    createdAt: new Date(),
-  });
-}
+      await userRef.set(
+        {
+          email,
+          role: "admin",
+          createdAt: new Date(),
+        },
+        { merge: true }
+      );
+    } else if (userSnap.exists) {
+      role = userSnap.data()?.role || "user";
+    } else {
+      await userRef.set({
+        email,
+        role: "user",
+        createdAt: new Date(),
+      });
+    }
 
-    const cookieStore = cookies();
+    // ✅ RESPONSE OBJECT (IMPORTANT)
+    const res = NextResponse.json({ success: true, role });
 
-    // 🔐 Session cookie
-    cookieStore.set("__session", token, {
+    // 🔐 SESSION COOKIE (middleware reads this)
+    res.cookies.set("__session", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,          // ALWAYS TRUE (HTTPS required)
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 5, // 5 days
+    });
+
+    // 🧠 ROLE COOKIE
+    res.cookies.set("role", role, {
+      httpOnly: false,
+      secure: true,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 5,
     });
 
-    // 🧠 Role cookie (middleware read karega)
-    cookieStore.set("role", role, {
-      httpOnly: false,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 5,
-    });
-
-    return NextResponse.json({ success: true, role });
+    return res;
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }
+

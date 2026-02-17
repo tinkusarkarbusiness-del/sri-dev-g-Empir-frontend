@@ -52,21 +52,17 @@ export async function POST(req: Request) {
 
     // 🔐 SESSION COOKIE (middleware reads this)
     res.cookies.set("__session", token, {
-      httpOnly: true,
-      secure: true,          // ALWAYS TRUE (HTTPS required)
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 5, // 5 days
-    });
+  httpOnly: true,
+  path: "/",
+  secure: true,
+  sameSite: "lax",
+});
 
-    // 🧠 ROLE COOKIE
-    res.cookies.set("role", role, {
-      httpOnly: false,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 5,
-    });
+res.cookies.set("role", role, {
+  path: "/",
+  secure: true,
+  sameSite: "lax",
+});
 
     return res;
   } catch (err) {

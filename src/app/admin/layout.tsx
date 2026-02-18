@@ -1,32 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
 import { adminNavLinks } from "@/lib/data";
+import { usePathname } from "next/navigation";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    const email = localStorage.getItem("email");
-
-    if (role === "admin") {
-      setChecked(true); // ✅ allow render
-    } else {
-      localStorage.clear();
-      router.replace("/login");
-    }
-  }, [router]);
-
-  if (!checked) return null; // ⛔ white screen crash STOP
 
   const getPageTitle = () => {
     const currentLink = adminNavLinks.find((link) =>

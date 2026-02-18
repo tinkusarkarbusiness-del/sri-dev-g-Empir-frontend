@@ -3,22 +3,22 @@ import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const role = req.cookies.get("role")?.value;
+  const token = req.cookies.get("__session")?.value;
+  const { pathname } = req.nextUrl;
 
-  console.log("ROLE =", role); // debug
-
-  if (req.nextUrl.pathname.startsWith("/login")) {
-    return NextResponse.next();
+  // Not logged in
+  if (!token && pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (req.nextUrl.pathname.startsWith("/admin")) {
-    if (role !== "admin") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  // Admin protection
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login"],
+  matcher: ["/admin/:path*"],
 };

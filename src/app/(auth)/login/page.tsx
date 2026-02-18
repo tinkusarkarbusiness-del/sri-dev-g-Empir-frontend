@@ -1,4 +1,5 @@
 'use client';
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
@@ -247,6 +248,7 @@ const handleGoogle = async () => {
       { merge: true }
     );
 
+    Cookies.set("role", data.role, { expires: 5, path: "/" });
     // ⏳ Wait for cookies to be saved
     setTimeout(() => {
   if (data.role === "admin") {
@@ -268,30 +270,46 @@ const handleGoogle = async () => {
   }
 };
 
-  const handleSignUp = async () => {
-    if (!email || !password) {
-        toast({
-            variant: "destructive",
-            title: "Missing fields",
-            description: "Please enter both email and password.",
-        });
-        return;
-    }
-    try {
-      setLoading(true);
-      await createUserWithEmailAndPassword(auth, email, password);
-window.location.href = "/dashboard";
-    } catch (err) {
-      console.error(err);
-      toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "Sign up failed: " + (err as Error).message,
-        });
-    } finally {
-        setLoading(false);
-    }
-  };
+ const handleSignUp = async () => {
+  if (!email || !password) {
+    toast({
+      variant: "destructive",
+      title: "Missing fields",
+      description: "Please enter both email and password.",
+    });
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    const token = await cred.user.getIdToken(true);
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
+    const data = await res.json();
+
+    Cookies.set("role", data.role || "user", { expires: 5, path: "/" });
+
+    window.location.href = "/dashboard";
+
+  } catch (err) {
+    console.error(err);
+    toast({
+      variant: "destructive",
+      title: "Sign up failed",
+      description: (err as Error).message,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleLogin = async () => {
   if (!email || !password) return;
@@ -300,7 +318,6 @@ window.location.href = "/dashboard";
     setLoading(true);
 
     const cred = await signInWithEmailAndPassword(auth, email, password);
-
     const token = await cred.user.getIdToken(true);
 
     const res = await fetch("/api/login", {
@@ -312,6 +329,9 @@ window.location.href = "/dashboard";
     });
 
     const data = await res.json();
+
+    // ✅ ROLE COOKIE SET
+    Cookies.set("role", data.role, { expires: 5, path: "/" });
 
     setTimeout(() => {
       if (data.role === "admin") {
@@ -333,11 +353,13 @@ window.location.href = "/dashboard";
   }
 };
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
   try {
     await signOut(auth);
 
     await fetch("/api/logout", { method: "POST" });
+
+    Cookies.remove("role", { path: "/" });
 
     window.location.href = "/login";
   } catch (err) {

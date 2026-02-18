@@ -6,11 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
 import { adminNavLinks } from "@/lib/data";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const [checked, setChecked] = useState(false);
@@ -19,21 +15,19 @@ export default function AdminLayout({
     const role = Cookies.get("role");
 
     if (role === "admin") {
-      setChecked(true); // ✅ allow render
+      setChecked(true);
     } else {
       router.replace("/login");
     }
   }, [router]);
 
-  if (!checked) return null; // ⛔ stop white screen
+  if (!checked) return null;
 
   const getPageTitle = () => {
-    const currentLink = adminNavLinks.find((link) =>
+    const currentLink = adminNavLinks.find(link =>
       pathname.startsWith(link.href)
     );
-    if (currentLink) return currentLink.label;
-    if (pathname === "/admin/dashboard") return "Global KPIs";
-    return "Empire Control Room";
+    return currentLink?.label || "Empire Control Room";
   };
 
   return (

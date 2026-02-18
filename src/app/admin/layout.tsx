@@ -1,5 +1,6 @@
 "use client";
 
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AppLayout } from "@/components/app/app-layout";
@@ -15,18 +16,16 @@ export default function AdminLayout({
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
-    const email = localStorage.getItem("email");
+    const role = Cookies.get("role");
 
     if (role === "admin") {
       setChecked(true); // ✅ allow render
     } else {
-      localStorage.clear();
       router.replace("/login");
     }
   }, [router]);
 
-  if (!checked) return null; // ⛔ white screen crash STOP
+  if (!checked) return null; // ⛔ stop white screen
 
   const getPageTitle = () => {
     const currentLink = adminNavLinks.find((link) =>

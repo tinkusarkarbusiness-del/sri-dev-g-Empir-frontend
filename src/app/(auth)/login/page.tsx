@@ -293,14 +293,13 @@ window.location.href = "/dashboard";
     }
   };
 
-  const handleLogin = async () => {
+const handleLogin = async () => {
   if (!email || !password) return;
 
   try {
     setLoading(true);
 
     const cred = await signInWithEmailAndPassword(auth, email, password);
-
     const token = await cred.user.getIdToken(true);
 
     const res = await fetch("/api/login", {
@@ -311,15 +310,20 @@ window.location.href = "/dashboard";
       body: JSON.stringify({ token }),
     });
 
+    if (!res.ok) {
+      throw new Error("Server login failed");
+    }
+
     const data = await res.json();
 
-    setTimeout(() => {
-      if (data.role === "admin") {
-        window.location.href = "/admin/dashboard";
-      } else {
-        window.location.href = "/dashboard";
-      }
-    }, 300);
+    // ✅ NO setTimeout
+    if (data.role === "admin") {
+      router.replace("/admin/dashboard");
+    } else {
+      router.replace("/dashboard");
+    }
+
+    router.refresh();
 
   } catch (err) {
     console.error(err);
@@ -335,11 +339,11 @@ window.location.href = "/dashboard";
 
   const handleLogout = async () => {
   try {
-    await signOut(auth);
+   await signOut(auth);
+await fetch("/api/logout", { method: "POST" });
 
-    await fetch("/api/logout", { method: "POST" });
-
-    window.location.href = "/login";
+router.replace("/login");
+router.refresh();
   } catch (err) {
     console.error("Logout error", err);
   }

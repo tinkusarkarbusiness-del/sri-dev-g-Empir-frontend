@@ -11,58 +11,53 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No token" }, { status: 400 });
     }
 
-    // 🔐 Verify Firebase ID token
     const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
     const db = getFirestore(firebaseAdminApp);
 
     const uid = decoded.uid;
     const email = decoded.email ?? "";
 
-    // 🔎 Firestore user check
+    const OWNER_EMAIL = "tinkusarkar.business@gmail.com";
+
     const userRef = db.collection("users").doc(uid);
     const userSnap = await userRef.get();
-
-    const OWNER_EMAIL = "tinkusarkar.business@gmail.com";
 
     let role = "user";
 
     if (email === OWNER_EMAIL) {
       role = "admin";
-
-      await userRef.set(
-        {
-          email,
-          role: "admin",
-          createdAt: new Date(),
-        },
-        { merge: true }
-      );
     } else if (userSnap.exists) {
       role = userSnap.data()?.role || "user";
-    } else {
-      await userRef.set({
-        email,
-        role: "user",
-        createdAt: new Date(),
-      });
     }
 
-    // ✅ RESPONSE OBJECT (IMPORTANT)
-    const res = NextResponse.json({ success: true, role });
+    await userRef.set(
+      {
+        email,
+        role,
+        updatedAt: new Date(),
+      },
+      { merge: true }
+    );
 
-    // 🔐 SESSION COOKIE (middleware reads this)
+    const res = NextResponse.json({ success: true });
+
+    // 🔐 SESSION COOKIE
     res.cookies.set("__session", token, {
-  httpOnly: true,
-  path: "/",
-  secure: true,
-  sameSite: "lax",
-});
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 5,
+    });
 
-res.cookies.set("role", role, {
-  path: "/",
-  secure: true,
-  sameSite: "lax",
-});
+    // 🔐 ROLE COOKIE (ALSO httpOnly)
+    res.cookies.set("role", role, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 5,
+    });
 
     return res;
   } catch (err) {

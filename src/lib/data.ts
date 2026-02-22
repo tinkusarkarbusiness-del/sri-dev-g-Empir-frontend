@@ -120,7 +120,7 @@ export const pricingTiers = [
         period: 'per month',
         features: [
             'All Visionary features',
-            'Direct access to SriDevG Ai Core',
+            'Direct access to SriDevG AI Core',
             'Bespoke AI model tuning',
             'Dedicated Empire Concierge',
             'Exclusive yearly retreat access',
@@ -186,7 +186,12 @@ export const adminNavLinks = [
   },
 ];
 
-export const kpis = [];
+export const kpis = [
+  { title: 'Active Users', value: '12,405', change: '+5.2%', icon: Users },
+  { title: 'Revenue', value: '₹8,45,920', change: '+12.1%', icon: Wallet },
+  { title: 'Uptime', value: '99.98%', change: '+0.01%', icon: Shield },
+  { title: 'AI-Human Ratio', value: '68%', change: '-1.5%', icon: Shapes },
+];
 
 export const sampleUsers = [
   { id: 'usr_001', name: 'Aarav Sharma', email: 'aarav.sharma@example.com', role: 'Visionary', status: 'Active', avatar: 'avatar-1' },

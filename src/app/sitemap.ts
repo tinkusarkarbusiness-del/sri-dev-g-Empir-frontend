@@ -7,7 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "https://www.sridevgempire.com/contact", lastModified: new Date() },
     { url: "https://www.sridevgempire.com/privacy-policy", lastModified: new Date() },
     { url: "https://www.sridevgempire.com/terms", lastModified: new Date() },
-    { url: "https://www.sridevgempire.com/dashboard", lastModified: new Date() },
   ];
 }
 

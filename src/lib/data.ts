@@ -186,8 +186,7 @@ export const adminNavLinks = [
   },
 ];
 
-export const kpis = [
- ];
+export const kpis = [];
 
 export const sampleUsers = [
   { id: 'usr_001', name: 'Aarav Sharma', email: 'aarav.sharma@example.com', role: 'Visionary', status: 'Active', avatar: 'avatar-1' },

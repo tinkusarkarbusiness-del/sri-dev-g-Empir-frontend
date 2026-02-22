@@ -120,7 +120,7 @@ export const pricingTiers = [
         period: 'per month',
         features: [
             'All Visionary features',
-            'Direct access to SriDevG GA1 Core',
+            'Direct access to SriDevG Ai Core',
             'Bespoke AI model tuning',
             'Dedicated Empire Concierge',
             'Exclusive yearly retreat access',

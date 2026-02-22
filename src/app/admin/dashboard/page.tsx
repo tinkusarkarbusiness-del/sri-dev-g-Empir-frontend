@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { kpis } from "@/lib/data"
 
 export default function AdminDashboardPage() {
   return (

@@ -69,7 +69,7 @@ export const testimonials = [
   {
     name: 'Rohan Sharma',
     title: 'Spiritual Entrepreneur',
-    quote: 'The SriDev Empire platform transformed not just my business, but my entire life. The AI Doll is like having a guru 24/7.',
+    quote: 'The Sri Dev G Empire platform transformed not just my business, but my entire life. The AI Doll is like having a guru 24/7.',
     imageId: 'avatar-1',
   },
   {
@@ -120,7 +120,7 @@ export const pricingTiers = [
         period: 'per month',
         features: [
             'All Visionary features',
-            'Direct access to SriDev AI Core',
+            'Direct access to SriDevG GA1 Core',
             'Bespoke AI model tuning',
             'Dedicated Empire Concierge',
             'Exclusive yearly retreat access',
@@ -147,7 +147,7 @@ export const appNavLinks = [
     icon: Wallet,
   },
   {
-    href: '#',
+    href: '/Blessings',
     label: 'Blessings',
     icon: Heart,
   },

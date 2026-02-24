@@ -1,42 +1,55 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { onAuthStateChanged } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
+import { useEffect, useState } from "react";
+import { auth } from "@/firebase/client";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/client";
+import { onAuthStateChanged } from "firebase/auth";
+import Link from "next/link";
 
-import { auth, db } from "@/firebase/client";
 export default function DashboardPage() {
-  const [userData, setUserData] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setLoading(false)
-        return
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const snap = await getDoc(docRef);
+
+        if (snap.exists()) {
+          setUserData(snap.data());
+        }
       }
+      setLoading(false);
+    });
 
-      const ref = doc(db, "users", user.uid)
-      const snap = await getDoc(ref)
+    return () => unsubscribe();
+  }, []);
 
-      if (snap.exists()) {
-        setUserData(snap.data())
-      }
-
-      setLoading(false)
-    })
-
-    return () => unsub()
-  }, [])
-
-  if (loading) return <p>Loading...</p>
-  if (!userData) return <p>No Firestore data found</p>
+  if (loading) return <p className="p-6">Loading...</p>;
 
   return (
-    <div className="space-y-2">
-      <h1 className="text-xl font-bold">Welcome, {userData.name}</h1>
-      <p>Email: {userData.email}</p>
-      <p>Role: {userData.role}</p>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">
+        Welcome, {userData?.name}
+      </h1>
+
+      <div className="bg-gray-800 p-6 rounded-xl w-96">
+        <img
+          src={userData?.avatar || "/avatar.png"}
+          className="w-20 h-20 rounded-full mb-4"
+        />
+
+        <p><strong>User ID:</strong> {userData?.userId}</p>
+
+        <Link
+          href="/profile"
+          className="inline-block mt-4 bg-yellow-500 px-4 py-2 rounded"
+        >
+          Edit Profile
+        </Link>
+      </div>
     </div>
-  )
+  );
 }

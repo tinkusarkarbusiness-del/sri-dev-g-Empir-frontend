@@ -134,7 +134,7 @@ export const appNavLinks = [
   {
     href: '/dashboard',
     label: 'Home',
-    icon: LayoutHome,
+    icon: Home,
   },
   {
     href: '/mirror',

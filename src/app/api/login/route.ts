@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json({ success: true });
 
-    // Only session cookie
+    // 🔐 Only session cookie (NO ROLE COOKIE)
     res.cookies.set("__session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
 
     return res;
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }

@@ -133,8 +133,8 @@ export const pricingTiers = [
 export const appNavLinks = [
   {
     href: '/dashboard',
-    label: 'Home',
-    icon: Home,
+    label: 'dashboard',
+    icon: layoutBashboard,
   },
   {
     href: '/mirror',

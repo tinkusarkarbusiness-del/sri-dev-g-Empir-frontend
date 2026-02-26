@@ -41,7 +41,12 @@ export default function RootLayout({
           fontSpaceGrotesk.variable
         )}
       >
-
+        <Script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6424315568161607"
+    crossOrigin="anonymous"
+    strategy="afterInteractive"
+  />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-2JZ38CEJEK"
           strategy="afterInteractive"

@@ -314,16 +314,11 @@ const handleLogin = async () => {
       throw new Error("Server login failed");
     }
 
-    const data = await res.json();
+    // ❌ Yahan role check nahi karna
+    // ❌ data.role use nahi karna
 
-    // ✅ NO setTimeout
-    if (data.role === "admin") {
-      router.replace("/admin/dashboard");
-    } else {
-      router.replace("/dashboard");
-    }
-
-    router.refresh();
+    // ✅ Sirf auth redirect page pe bhejna
+    router.replace("/auth-redirect");
 
   } catch (err) {
     console.error(err);
@@ -336,7 +331,7 @@ const handleLogin = async () => {
     setLoading(false);
   }
 };
-
+  
   const handleLogout = async () => {
   try {
    await signOut(auth);

@@ -6,9 +6,7 @@ import { firebaseAdminApp } from "@/firebase/adminConfig";
 export default async function AuthRedirect() {
   const token = cookies().get("__session")?.value;
 
-  if (!token) {
-    redirect("/login");
-  }
+  if (!token) redirect("/login");
 
   try {
     const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
@@ -23,7 +21,7 @@ export default async function AuthRedirect() {
 
     redirect("/dashboard");
 
-  } catch (error) {
+  } catch {
     redirect("/login");
   }
 }

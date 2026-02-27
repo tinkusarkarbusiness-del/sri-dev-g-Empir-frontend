@@ -235,17 +235,19 @@ const handleGoogle = async () => {
 
     // ---------- SAVE USER PROFILE ----------
     const userRef = doc(db, "users", u.uid);
-    await setDoc(
-      userRef,
-      {
-        uid: u.uid,
-        email: u.email,
-        name: u.displayName || "",
-        photo: u.photoURL || "",
-        createdAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+
+await setDoc(
+  userRef,
+  {
+    uid: u.uid,
+    email: u.email,
+    name: u.displayName || "",
+    photo: "", // Google photo save nahi hoga
+    role: "user",
+    createdAt: serverTimestamp(),
+  },
+  { merge: true }
+);
 
     // ⏳ Wait for cookies to be saved
     setTimeout(() => {

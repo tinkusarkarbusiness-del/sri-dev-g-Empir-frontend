@@ -235,27 +235,25 @@ const handleGoogle = async () => {
 
     // ---------- SAVE USER PROFILE ----------
     const userRef = doc(db, "users", u.uid);
-
-await setDoc(
-  userRef,
-  {
-    uid: u.uid,
-    email: u.email,
-    name: u.displayName || "",
-    photo: "", // Google photo save nahi hoga
-    role: "user",
-    createdAt: serverTimestamp(),
-  },
-  { merge: true }
-);
+    await setDoc(
+      userRef,
+      {
+        uid: u.uid,
+        email: u.email,
+        name: u.displayName || "",
+        photo: u.photoURL || "",
+        createdAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
     // ⏳ Wait for cookies to be saved
     setTimeout(() => {
-  if (data.role === "admin") {
-    window.location.href = "/admin/dashboard";
-  } else {
-    window.location.href = "/dashboard";
-  }
+  if (data.role === "admin" || data.role === "superadmin") {
+  router.replace("/admin/dashboard");
+} else {
+  router.replace("/dashboard");
+}
 }, data.role === "admin" ? 600 : 300);
 
   } catch (err) {

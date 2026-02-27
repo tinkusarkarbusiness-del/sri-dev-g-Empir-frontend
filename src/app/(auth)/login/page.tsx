@@ -215,10 +215,8 @@ const handleGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const u = result.user;
 
-    // 🔐 Get Firebase ID token
-    const token = await u.getIdToken(true); // force refresh
+    const token = await u.getIdToken(true);
 
-    // 🔥 CALL SERVER LOGIN
     const res = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -227,13 +225,11 @@ const handleGoogle = async () => {
       body: JSON.stringify({ token }),
     });
 
-    const data = await res.json();
-
     if (!res.ok) {
       throw new Error("Server login failed");
     }
 
-    // ---------- SAVE USER PROFILE ----------
+    // Save profile
     const userRef = doc(db, "users", u.uid);
     await setDoc(
       userRef,
@@ -247,14 +243,10 @@ const handleGoogle = async () => {
       { merge: true }
     );
 
-    // ⏳ Wait for cookies to be saved
-    setTimeout(() => {
-  if (data.role === "admin" || data.role === "superadmin") {
-  router.replace("/admin/dashboard");
-} else {
-  router.replace("/dashboard");
-}
-}, data.role === "admin" ? 600 : 300);
+    // ✅ NO ROLE CHECK
+    // ✅ NO setTimeout
+    router.replace("/auth-redirect");
+    router.refresh();
 
   } catch (err) {
     console.error(err);
@@ -267,7 +259,6 @@ const handleGoogle = async () => {
     setLoading(false);
   }
 };
-
   const handleSignUp = async () => {
     if (!email || !password) {
         toast({

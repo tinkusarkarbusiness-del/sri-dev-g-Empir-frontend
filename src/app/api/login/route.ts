@@ -20,12 +20,12 @@ export async function POST(req: Request) {
     });
 
     res.cookies.set("__session", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 5,
-    });
+  httpOnly: true,
+  secure: true,            // 🔥 Always true in production
+  sameSite: "none",        // 🔥 IMPORTANT
+  path: "/",
+  maxAge: 60 * 60 * 24 * 5,
+});
 
     return res;
 

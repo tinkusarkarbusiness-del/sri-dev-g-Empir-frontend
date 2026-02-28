@@ -22,7 +22,7 @@ export default async function AdminDashboardPage() {
   }
 
   try {
-    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
+    const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(token, true);
 
     // 🔒 Role check (Custom Claim based)
     if (

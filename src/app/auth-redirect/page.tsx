@@ -4,13 +4,15 @@ import { getAuth } from "firebase-admin/auth";
 import { firebaseAdminApp } from "@/firebase/adminConfig";
 
 export default async function AuthRedirect() {
-  const token = cookies().get("__session")?.value;
+  const session = cookies().get("__session")?.value;
 
-  if (!token) redirect("/login");
+  if (!session) redirect("/login");
 
   try {
-    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
+    const decoded = await getAuth(firebaseAdminApp)
+      .verifySessionCookie(session, true);
 
+    // 🔐 Role based redirect
     if (decoded.role === "superadmin") {
       redirect("/admin/dashboard");
     }
@@ -19,6 +21,7 @@ export default async function AuthRedirect() {
       redirect("/admin/dashboard");
     }
 
+    // Default user
     redirect("/dashboard");
 
   } catch {

@@ -6,31 +6,26 @@ export async function POST(req: Request) {
   try {
     const { token } = await req.json();
 
-    if (!token) {
-      return NextResponse.json({ error: "No token" }, { status: 400 });
-    }
+    const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
 
-    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(token);
+    const sessionCookie = await getAuth(firebaseAdminApp)
+      .createSessionCookie(token, { expiresIn });
 
-    const role = decoded.role || "user";
+    const response = NextResponse.json({ success: true });
 
-    const res = NextResponse.json({
-      success: true,
-      role, // ✅ SEND ROLE BACK
+    response.cookies.set("__session", sessionCookie, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: expiresIn,
     });
 
-    res.cookies.set("__session", token, {
-  httpOnly: true,
-  secure: true,            // 🔥 Always true in production
-  sameSite: "none",        // 🔥 IMPORTANT
-  path: "/",
-  maxAge: 60 * 60 * 24 * 5,
-});
-
-    return res;
-
-  } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    return response;
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 }

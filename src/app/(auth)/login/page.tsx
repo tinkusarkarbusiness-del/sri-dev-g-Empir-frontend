@@ -237,7 +237,7 @@ const handleGoogle = async () => {
         uid: u.uid,
         email: u.email,
         name: u.displayName || "",
-        photo: ,
+        photo: u.photoURL || "",
         createdAt: serverTimestamp(),
       },
       { merge: true }

@@ -12,16 +12,10 @@ export default async function AuthRedirect() {
     const decoded = await getAuth(firebaseAdminApp)
       .verifySessionCookie(session, true);
 
-    // 🔐 Role based redirect
-    if (decoded.role === "superadmin") {
+    if (decoded.role === "admin" || decoded.role === "superadmin") {
       redirect("/admin/dashboard");
     }
 
-    if (decoded.role === "admin") {
-      redirect("/admin/dashboard");
-    }
-
-    // Default user
     redirect("/dashboard");
 
   } catch {

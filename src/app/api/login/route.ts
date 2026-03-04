@@ -20,14 +20,14 @@ export async function POST(req: Request) {
 
     // ✅ Set browser cookie
     response.cookies.set({
-      name: "__session",
-      value: sessionCookie,
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-      maxAge: expiresIn / 1000,
-    });
+  name: "__session",
+  value: sessionCookie,
+  httpOnly: true,
+  secure: true,
+  sameSite: "lax",   // ✅ CHANGE THIS
+  path: "/",
+  maxAge: expiresIn / 1000,
+});
 
     return response;
   } catch (error) {

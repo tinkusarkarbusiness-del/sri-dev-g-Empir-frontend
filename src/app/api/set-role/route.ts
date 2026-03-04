@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const decoded = await getAuth(firebaseAdminApp).verifyIdToken(session);
+    const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(session);
 
     // ✅ Only superadmin can set roles
     if (decoded.role !== "superadmin") {

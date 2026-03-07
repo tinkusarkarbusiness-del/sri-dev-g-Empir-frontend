@@ -24,13 +24,6 @@ export default async function AdminDashboardPage() {
   try {
     const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(token, true);
 
-    // 🔒 Role check (Custom Claim based)
-    if (
-      decoded.role !== "admin" &&
-      decoded.role !== "superadmin"
-    ) {
-      redirect("/dashboard");
-    }
   } catch (error) {
     redirect("/login");
   }

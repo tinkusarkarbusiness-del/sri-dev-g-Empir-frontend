@@ -2,12 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const session = req.cookies.get("__session")?.value;
 
+  const session = req.cookies.get("__session");
+
+  // protect admin routes
   if (req.nextUrl.pathname.startsWith("/admin")) {
+
     if (!session) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
   }
 
   return NextResponse.next();

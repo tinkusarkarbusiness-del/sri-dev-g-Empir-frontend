@@ -11,5 +11,5 @@ export default function AuthRedirect() {
   }
 
   // Temporary test
-  redirect("/admin");
+  redirect("/admin/dashboard");
 }

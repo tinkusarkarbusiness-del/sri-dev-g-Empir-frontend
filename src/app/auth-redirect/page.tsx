@@ -1,31 +1,33 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { getAuth } from "firebase-admin/auth";
-import { firebaseAdminApp } from "@/firebase/adminConfig";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 
-export default async function AuthRedirect() {
-  const token = cookies().get("__session")?.value;
+import { auth } from "@/firebase/client";
 
-  if (!token) {
-    redirect("/login");
-  }
+export default function AuthRedirect() {
+  const router = useRouter();
 
-  try {
-    const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(token, true);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
 
-    const email = decoded.email;
+      if (!user) {
+        router.push("/login");
+        return;
+      }
 
-    // 👑 Owner
-    if (email === "tinkusarkar.business@gmail.com") {
-      redirect("/admin/dashboard");
-    }
+      // 👑 owner email
+      if (user.email === "tinkusarkar.business@gmail.com") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
 
-    // 👤 Normal user
-    redirect("/dashboard");
+    });
 
-  } catch {
-    redirect("/login");
-  }
+    return () => unsub();
+  }, [router]);
+
+  return <p>Redirecting...</p>;
 }

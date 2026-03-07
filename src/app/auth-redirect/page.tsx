@@ -2,14 +2,30 @@ export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getAuth } from "firebase-admin/auth";
+import { firebaseAdminApp } from "@/firebase/adminConfig";
 
-export default function AuthRedirect() {
-  const session = cookies().get("__session")?.value;
+export default async function AuthRedirect() {
+  const token = cookies().get("__session")?.value;
 
-  if (!session) {
+  if (!token) {
     redirect("/login");
   }
 
-  // Temporary test
-  redirect("/admin/dashboard");
+  try {
+    const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(token, true);
+
+    const email = decoded.email;
+
+    // 👑 Owner
+    if (email === "tinkusarkar.business@gmail.com") {
+      redirect("/admin/dashboard");
+    }
+
+    // 👤 Normal user
+    redirect("/dashboard");
+
+  } catch {
+    redirect("/login");
+  }
 }

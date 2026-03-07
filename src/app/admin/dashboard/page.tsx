@@ -24,6 +24,13 @@ export default async function AdminDashboardPage() {
   try {
     const decoded = await getAuth(firebaseAdminApp).verifySessionCookie(token, true);
 
+    const email = decoded.email;
+
+    // 👑 OWNER EMAIL
+    if (email !== "tinkusarkar.business@gmail.com") {
+      redirect("/dashboard");
+    }
+
   } catch (error) {
     redirect("/login");
   }

@@ -36,7 +36,6 @@ export default function DashboardPage() {
     <div className="space-y-2">
       <h1 className="text-xl font-bold">Welcome, {userData.name}</h1>
       <p>Email: {userData.email}</p>
-      <p>Role: {userData.role}</p>
     </div>
   )
 }

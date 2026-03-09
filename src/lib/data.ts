@@ -138,7 +138,7 @@ export const appNavLinks = [
   },
   {
   href: '/ai-doll',
-  label: 'AI Doll Digital Companion',
+  label: 'AI Doll Companion',
   icon: ToyBrick,
   },
   {

@@ -137,6 +137,11 @@ export const appNavLinks = [
     icon: LayoutDashboard,
   },
   {
+  href: '/ai-doll',
+  label: 'AI Doll Digital Companion',
+  icon: ToyBrick,
+  },
+  {
     href: '/mirror',
     label: 'AI Mirror',
     icon: Camera,

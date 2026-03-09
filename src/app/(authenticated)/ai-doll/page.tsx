@@ -6,7 +6,7 @@ export default function AIDollPage() {
       <div className="mt-6">
         <img
           src="/ai-doll.png"
-          alt="AI Doll"
+          alt="AI Doll companion"
           className="rounded-2xl w-80"
         />
 

@@ -1,7 +1,7 @@
 export default function AIDollPage() {
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold">AI Doll</h1>
+      <h1 className="text-3xl font-bold">AI Doll companion</h1>
 
       <div className="mt-6">
         <img

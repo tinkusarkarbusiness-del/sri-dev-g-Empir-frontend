@@ -1,65 +1,60 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 export default function AIDollPage() {
 
-  const [message, setMessage] = useState("")
-  const [chat, setChat] = useState<string[]>([])
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState<string[]>([]);
 
   const sendMessage = async () => {
 
-    if (!message) return
+    if (!message) return;
 
-    const newChat = [...chat, "You: " + message]
+    const newChat = [...chat, "You: " + message];
 
     const res = await fetch("/api/ai-doll", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message })
-    })
+      body: JSON.stringify({ message }),
+    });
 
-    const data = await res.json()
+    const data = await res.json();
 
-    newChat.push("AI Doll: " + data.reply)
+    newChat.push("AI Doll: " + data.reply);
 
-    setChat(newChat)
-    setMessage("")
-  }
+    setChat(newChat);
+    setMessage("");
+  };
 
   return (
+    <div className="p-6 flex flex-col items-center">
 
-    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">AI Doll Companion</h1>
 
-      <h1 className="text-3xl font-bold">AI Doll Companion</h1>
+      <img
+        src="/ai-doll.png"
+        alt="AI Doll companion"
+        className="rounded-2xl w-80"
+      />
 
-      <div className="mt-6">
-        <img
-          src="/ai-doll.png"
-          alt="AI Doll"
-          className="rounded-2xl w-80"
-        />
-      </div>
+      <div className="mt-6 w-full max-w-md bg-black/30 p-4 rounded-xl">
 
-      <div className="mt-6 max-w-md">
-
-        <div className="bg-black/30 p-4 rounded-lg h-48 overflow-y-auto">
-
-          {chat.map((c, i) => (
-            <p key={i}>{c}</p>
+        <div className="h-40 overflow-y-auto mb-4 text-sm space-y-2">
+          {chat.map((msg, i) => (
+            <p key={i}>{msg}</p>
           ))}
-
         </div>
 
-        <div className="flex gap-2 mt-3">
+        <div className="flex gap-2">
 
           <input
-            className="flex-1 p-2 rounded bg-gray-800"
-            placeholder="Talk to AI Doll..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            placeholder="Talk to AI Doll..."
+            className="flex-1 p-2 rounded bg-gray-800"
           />
 
           <button
@@ -74,5 +69,5 @@ export default function AIDollPage() {
       </div>
 
     </div>
-  )
+  );
 }

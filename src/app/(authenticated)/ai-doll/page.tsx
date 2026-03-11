@@ -4,69 +4,55 @@ import { useState } from "react";
 
 export default function AIDollPage() {
 
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState<string[]>([]);
+  const [text, setText] = useState("");
+  const [reply, setReply] = useState("");
 
-  const sendMessage = async () => {
+  function talk() {
 
-    if (!message) return;
+    if (text === "hello") {
+      setReply("Hello! I am your AI Doll.");
+    } 
+    else if (text === "blessing") {
+      setReply("May happiness and prosperity come to your life.");
+    } 
+    else if (text === "future") {
+      setReply("Your future depends on your actions today.");
+    } 
+    else {
+      setReply("I am here to guide you.");
+    }
 
-    const newChat = [...chat, "You: " + message];
-
-    const res = await fetch("/api/ai-doll", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
-    });
-
-    const data = await res.json();
-
-    newChat.push("AI Doll: " + data.reply);
-
-    setChat(newChat);
-    setMessage("");
-  };
+  }
 
   return (
-    <div className="p-6 flex flex-col items-center">
+    <div className="p-6 text-center">
 
       <h1 className="text-3xl font-bold mb-6">AI Doll Companion</h1>
 
       <img
         src="/ai-doll.png"
-        alt="AI Doll companion"
-        className="rounded-2xl w-80"
+        className="w-72 mx-auto rounded-xl"
       />
 
-      <div className="mt-6 w-full max-w-md bg-black/30 p-4 rounded-xl">
+      <div className="mt-6">
 
-        <div className="h-40 overflow-y-auto mb-4 text-sm space-y-2">
-          {chat.map((msg, i) => (
-            <p key={i}>{msg}</p>
-          ))}
-        </div>
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Talk to AI Doll..."
+          className="p-2 border rounded"
+        />
 
-        <div className="flex gap-2">
-
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Talk to AI Doll..."
-            className="flex-1 p-2 rounded bg-gray-800"
-          />
-
-          <button
-            onClick={sendMessage}
-            className="px-4 py-2 bg-yellow-500 rounded"
-          >
-            Send
-          </button>
-
-        </div>
+        <button
+          onClick={talk}
+          className="ml-2 px-4 py-2 bg-yellow-500 rounded"
+        >
+          Send
+        </button>
 
       </div>
+
+      <p className="mt-6 text-lg">{reply}</p>
 
     </div>
   );
